@@ -314,6 +314,16 @@ export class OfficeEditor {
   }
   
   /**
+   * 清空所有物件
+   */
+  public clearAll() {
+    this.state.sceneObjects.clear();
+    this.state.gridOccupancy.clear();
+    this.state.history = [];
+    this.state.historyIndex = -1;
+  }
+  
+  /**
    * 匯入場景配置
    */
   public importScene(objects: SceneObject[]) {

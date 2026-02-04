@@ -87,8 +87,15 @@ export default function EditorPage() {
 
   const handleClear = () => {
     if (confirm('確定要清空所有物件嗎？此操作無法復原。')) {
-      SceneStorage.clear();
-      window.location.reload();
+      if (editorRef) {
+        editorRef.clearAll();
+        editorRef.refresh();
+        SceneStorage.clear();
+        alert('✅ 已清空所有物件');
+      } else {
+        SceneStorage.clear();
+        window.location.reload();
+      }
     }
   };
 

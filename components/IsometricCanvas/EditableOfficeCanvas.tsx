@@ -156,6 +156,14 @@ export function EditableOfficeCanvas({
         // 建立場景
         await buildScene(pixiApp);
         setIsReady(true);
+        
+        // 通知父組件編輯器已就緒
+        if (onEditorReady && editorRef.current) {
+          onEditorReady({
+            ...editorRef.current,
+            refresh: () => refreshScene()
+          });
+        }
 
       } catch (error) {
         console.error('Pixi.js 初始化失敗:', error);
@@ -249,15 +257,15 @@ export function EditableOfficeCanvas({
     const sceneContainer = new PIXI.Container();
     stage.addChild(sceneContainer);
     
-    // 啟用場景拖曳
+    // 啟用場景拖曳（僅檢視模式）
     sceneContainer.eventMode = 'static';
-    sceneContainer.cursor = 'grab';
+    sceneContainer.cursor = mode === 'view' ? 'grab' : 'default';
     
     let isDraggingScene = false;
     let dragStart = { x: 0, y: 0 };
     
     sceneContainer.on('pointerdown', (event: any) => {
-      if (mode === 'view') {
+      if (mode === 'view') {  // 只有檢視模式可拖曳
         isDraggingScene = true;
         sceneContainer.cursor = 'grabbing';
         dragStart = {
@@ -275,13 +283,17 @@ export function EditableOfficeCanvas({
     });
     
     sceneContainer.on('pointerup', () => {
-      isDraggingScene = false;
-      sceneContainer.cursor = 'grab';
+      if (mode === 'view') {
+        isDraggingScene = false;
+        sceneContainer.cursor = 'grab';
+      }
     });
     
     sceneContainer.on('pointerupoutside', () => {
-      isDraggingScene = false;
-      sceneContainer.cursor = 'grab';
+      if (mode === 'view') {
+        isDraggingScene = false;
+        sceneContainer.cursor = 'grab';
+      }
     });
 
     // 圖層
@@ -380,16 +392,25 @@ export function EditableOfficeCanvas({
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
-    // 簡化的網格計算（相對於場景偏移）
+    // 場景容器偏移（從 buildScene 取得）
+    const sceneContainer = app.stage.children[0] as PIXI.Container;
+    const sceneX = sceneContainer?.x || 0;
+    const sceneY = sceneContainer?.y || 0;
+    
+    // 圖層偏移
     const offsetX = app.screen.width / 2 - 200;
     const offsetY = 150;
     
-    const relX = mouseX - offsetX;
-    const relY = mouseY - offsetY;
+    // 總偏移
+    const totalOffsetX = sceneX + offsetX;
+    const totalOffsetY = sceneY + offsetY;
     
-    // 等距反轉計算
-    const gridX = Math.round((relX / 64 + relY / 32) / 2);
-    const gridY = Math.round((relY / 32 - relX / 64) / 2);
+    const relX = mouseX - totalOffsetX;
+    const relY = mouseY - totalOffsetY;
+    
+    // 等距反轉計算（修正公式）
+    const gridX = Math.round(relX / 32 + relY / 16);
+    const gridY = Math.round(relY / 16 - relX / 32);
 
     // 限制在網格範圍內
     const clampedX = Math.max(0, Math.min(7, gridX));
@@ -400,7 +421,7 @@ export function EditableOfficeCanvas({
     // 更新預覽位置
     if (previewSprite) {
       const iso = toIsometric(clampedX, clampedY);
-      previewSprite.position.set(offsetX + iso.isoX, offsetY + iso.isoY);
+      previewSprite.position.set(totalOffsetX + iso.isoX, totalOffsetY + iso.isoY);
     }
 
     // 更新高亮網格
@@ -409,7 +430,7 @@ export function EditableOfficeCanvas({
       const iso = toIsometric(clampedX, clampedY);
       
       highlightGraphics.clear();
-      highlightGraphics.position.set(offsetX + iso.isoX, offsetY + iso.isoY);
+      highlightGraphics.position.set(totalOffsetX + iso.isoX, totalOffsetY + iso.isoY);
       
       // 繪製高亮菱形
       const tileWidth = 64;
