@@ -183,9 +183,14 @@ export function EditableOfficeCanvas({
   }, [mode]);
 
   // 建立場景
-  const buildScene = async (pixiApp: PixiApp) => {
+  const buildScene = useCallback(async (pixiApp: PixiApp) => {
     const app = pixiApp.getApp();
-    if (!app || !editorRef.current) return;
+    if (!app || !editorRef.current) {
+      console.log('buildScene: app or editor not ready', { app: !!app, editor: !!editorRef.current });
+      return;
+    }
+
+    console.log('buildScene: Starting to build scene');
 
     const stage = app.stage;
     stage.removeChildren();
@@ -203,6 +208,8 @@ export function EditableOfficeCanvas({
     floorLayer.position.set(offsetX, offsetY);
     objectLayer.position.set(offsetX, offsetY);
 
+    console.log('buildScene: Layers created, drawing floor');
+
     // 繪製地板（8×8）
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
@@ -213,12 +220,18 @@ export function EditableOfficeCanvas({
       }
     }
 
+    console.log('buildScene: Floor complete, drawing objects');
+
     // 繪製所有物件
     const allObjects = editorRef.current.getAllObjects();
+    console.log('buildScene: Object count:', allObjects.length);
+    
     for (const { id, object } of allObjects) {
       await addObjectToScene(id, object, objectLayer);
     }
-  };
+
+    console.log('buildScene: Scene build complete');
+  }, []); // 空依賴，確保穩定引用
 
   // 新增物件到場景
   const addObjectToScene = async (
@@ -259,10 +272,11 @@ export function EditableOfficeCanvas({
 
   // 重新整理場景
   const refreshScene = useCallback(() => {
+    console.log('refreshScene called');
     if (pixiAppRef.current) {
       buildScene(pixiAppRef.current);
     }
-  }, []);
+  }, [buildScene]);
 
   // 處理放置模式點擊
   const handleCanvasClick = useCallback((event: React.MouseEvent) => {
