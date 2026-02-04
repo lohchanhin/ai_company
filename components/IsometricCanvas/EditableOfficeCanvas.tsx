@@ -116,17 +116,38 @@ export function EditableOfficeCanvas({
 
     const initPixi = async () => {
       try {
+        const container = canvasRef.current;
+        if (!container) {
+          console.error('Canvas container not found');
+          return;
+        }
+
+        const width = container.clientWidth || 800;
+        const height = container.clientHeight || 600;
+
+        console.log('Initializing Pixi.js', { width, height });
+
         const pixiApp = new PixiApp({
-          width: canvasRef.current!.clientWidth,
-          height: canvasRef.current!.clientHeight,
+          width,
+          height,
           backgroundColor: 0xf5f5f5
         });
 
         await pixiApp.init();
         const app = pixiApp.getApp();
-        if (!app) return;
+        
+        if (!app) {
+          console.error('Failed to get Pixi app');
+          return;
+        }
 
-        canvasRef.current!.appendChild(app.canvas as HTMLCanvasElement);
+        if (!app.canvas) {
+          console.error('Canvas not created');
+          return;
+        }
+
+        console.log('Appending canvas to container');
+        container.appendChild(app.canvas as HTMLCanvasElement);
         pixiAppRef.current = pixiApp;
 
         // 建立場景
@@ -141,8 +162,10 @@ export function EditableOfficeCanvas({
     initPixi();
 
     return () => {
-      pixiAppRef.current?.destroy();
-      pixiAppRef.current = null;
+      if (pixiAppRef.current) {
+        pixiAppRef.current.destroy();
+        pixiAppRef.current = null;
+      }
     };
   }, []);
 
