@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { IsometricCanvas } from '@/components/IsometricCanvas';
+import { VPSOfficeCanvas } from '@/components/IsometricCanvas/VPSOfficeCanvas';
 import { Server } from '@/types';
 
 // 任務類型
@@ -181,10 +181,7 @@ export default function Home() {
         {/* 左側：等距辦公室 Canvas (固定 70%) */}
         <div className="w-[70%] p-6">
           <div className="h-full bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-            <IsometricCanvas 
-              servers={servers} 
-              onServerClick={setSelectedServer}
-            />
+            <VPSOfficeCanvas />
           </div>
         </div>
         
