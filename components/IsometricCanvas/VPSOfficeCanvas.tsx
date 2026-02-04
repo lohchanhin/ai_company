@@ -5,9 +5,15 @@ import * as PIXI from 'pixi.js';
 import { PixiApp } from '@/lib/pixi';
 import { VPSEmployeeSprite } from './VPSEmployeeSprite';
 import { FloorTileSprite } from './FloorTileSprite';
-import { FurnitureSprite } from './FurnitureSprite';
+import { PixelSprite } from './PixelSprite';
 import { useVPSMonitor } from '@/hooks/useVPSMonitor';
 import { DEFAULT_VPS_CONFIG } from '@/lib/vps-monitor/types';
+import { 
+  FULL_OFFICE_SCENE, 
+  CHARACTER_SPRITES, 
+  FURNITURE_SPRITES, 
+  OBJECT_SPRITES 
+} from '@/lib/scene-config';
 
 export function VPSOfficeCanvas() {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -75,39 +81,36 @@ export function VPSOfficeCanvas() {
       
       console.log(`🎨 Floor tiles created: ${floorTileCount}`);
       
-      // ===== 建立辦公家具 =====
-      const furnitureContainer = new PIXI.Container();
-      mainContainer.addChild(furnitureContainer);
+      // ===== 建立完整辦公室場景 =====
+      const sceneContainer = new PIXI.Container();
+      mainContainer.addChild(sceneContainer);
       
-      // 開發區家具（6個工位）
-      const workstations = [
-        { x: 1, y: 0 }, { x: 3, y: 0 }, { x: 5, y: 0 },
-        { x: 1, y: 2 }, { x: 3, y: 2 }, { x: 5, y: 2 }
-      ];
+      console.log(`📦 Loading ${FULL_OFFICE_SCENE.length} scene objects...`);
       
-      workstations.forEach(pos => {
-        const desk = new FurnitureSprite('desk', pos.x, pos.y);
-        const chair = new FurnitureSprite('chair', pos.x, pos.y + 0.5);
-        furnitureContainer.addChild(desk.graphics);
-        furnitureContainer.addChild(chair.graphics);
+      // 加載所有場景物件
+      FULL_OFFICE_SCENE.forEach((obj) => {
+        let spritePath = '';
+        
+        if (obj.type === 'character') {
+          spritePath = CHARACTER_SPRITES[obj.sprite];
+        } else if (obj.type === 'furniture') {
+          spritePath = FURNITURE_SPRITES[obj.sprite];
+        } else if (obj.type === 'object') {
+          spritePath = OBJECT_SPRITES[obj.sprite];
+        }
+        
+        if (spritePath) {
+          const pixelSprite = new PixelSprite(
+            spritePath,
+            obj.gridX,
+            obj.gridY,
+            obj.scale || 1
+          );
+          sceneContainer.addChild(pixelSprite.container);
+        }
       });
       
-      // 休息區設施
-      const waterDispenser = new FurnitureSprite('water-dispenser', 1, 5);
-      const plant1 = new FurnitureSprite('plant', 3, 5);
-      const bookshelf = new FurnitureSprite('bookshelf', 6, 5);
-      
-      furnitureContainer.addChild(waterDispenser.graphics);
-      furnitureContainer.addChild(plant1.graphics);
-      furnitureContainer.addChild(bookshelf.graphics);
-      
-      // 管理區
-      const ceoDeskPos = { x: 3, y: 7 };
-      const ceoDesk = new FurnitureSprite('desk', ceoDeskPos.x, ceoDeskPos.y);
-      const ceoChair = new FurnitureSprite('chair', ceoDeskPos.x, ceoDeskPos.y + 0.5);
-      
-      furnitureContainer.addChild(ceoDesk.graphics);
-      furnitureContainer.addChild(ceoChair.graphics);
+      console.log('✅ Scene objects loaded');
       
       // ===== VPS 員工（最上層）=====
       const employeeContainer = new PIXI.Container();
