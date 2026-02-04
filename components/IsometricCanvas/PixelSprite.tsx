@@ -51,10 +51,8 @@ export class PixelSprite {
     
     const directory = typeMap[type] || 'objects';
     
-    // 處理特殊命名（如 object-monitor → monitor）
-    const cleanName = name.replace(/^(object|furniture|decoration)-/, '');
-    
-    return `/sprites/${directory}/${cleanName}.png`;
+    // 不要移除前綴，直接使用原始名稱
+    return `/sprites/${directory}/${name}.png`;
   }
   
   public async load(): Promise<void> {
