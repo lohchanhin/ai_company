@@ -3,14 +3,14 @@
 import * as PIXI from 'pixi.js';
 import { Server } from '@/types';
 import { toIsometric } from '@/lib/isometric';
-import { createPlaceholderSprite, createTextSprite, createProgressBar } from '@/lib/pixi';
+import { createTextSprite, createProgressBar } from '@/lib/pixi';
 
 export class ServerSprite {
   container: PIXI.Container;
   server: Server;
   
   // 視覺元素
-  private characterSprite: PIXI.Graphics;
+  private sprite: PIXI.Sprite | null = null;
   private nameText: PIXI.Text;
   private statusText: PIXI.Text;
   private cpuBar: PIXI.Graphics | null = null;
@@ -19,6 +19,8 @@ export class ServerSprite {
   // 動畫
   private animationFrame = 0;
   private animationSpeed = 0.1;
+  private animationTextures: PIXI.Texture[] = [];
+  private currentFrame = 0;
   
   constructor(server: Server) {
     this.server = server;
@@ -28,9 +30,8 @@ export class ServerSprite {
     const iso = toIsometric(server.visual.gridX, server.visual.gridY);
     this.container.position.set(iso.isoX, iso.isoY);
     
-    // 創建角色精靈（臨時彩色方塊）
-    this.characterSprite = this.createCharacterPlaceholder();
-    this.container.addChild(this.characterSprite);
+    // 創建精靈（異步載入）
+    this.loadSprite();
     
     // 創建名稱文字
     this.nameText = createTextSprite(server.name, { fontSize: 10, fill: 0x333333 });
@@ -53,21 +54,84 @@ export class ServerSprite {
   }
   
   /**
-   * 創建角色佔位符（臨時）
+   * 載入精靈圖片
    */
-  private createCharacterPlaceholder(): PIXI.Graphics {
+  private async loadSprite() {
+    try {
+      const spritePath = this.getSpritePath();
+      const texture = await PIXI.Assets.load(spritePath);
+      
+      this.sprite = new PIXI.Sprite(texture);
+      this.sprite.anchor.set(0.5, 0.5);
+      this.sprite.position.set(0, 0);
+      
+      // 如果需要動畫，載入所有幀
+      if (this.server.visual.type === 'developer') {
+        await this.loadAnimationFrames();
+      }
+      
+      this.container.addChildAt(this.sprite, 0);
+    } catch (error) {
+      console.error('Failed to load sprite:', error);
+      // 降級：使用彩色方塊
+      this.createFallbackSprite();
+    }
+  }
+  
+  /**
+   * 載入動畫幀
+   */
+  private async loadAnimationFrames() {
+    try {
+      const state = this.server.currentTask ? 'working' : 'idle';
+      const frameCount = state === 'idle' ? 2 : 2; // 先用2幀測試
+      
+      for (let i = 1; i <= frameCount; i++) {
+        const path = `/sprites/characters/developer-${state}-${i}.png`;
+        const texture = await PIXI.Assets.load(path);
+        this.animationTextures.push(texture);
+      }
+    } catch (error) {
+      console.warn('Failed to load animation frames:', error);
+    }
+  }
+  
+  /**
+   * 獲取精靈路徑
+   */
+  private getSpritePath(): string {
+    const { type } = this.server.visual;
+    
+    switch (type) {
+      case 'developer':
+        return '/sprites/characters/developer-idle-1.png';
+      case 'database':
+        return '/sprites/servers/server-database.png';
+      case 'web':
+        return '/sprites/servers/server-web.png';
+      default:
+        return '/sprites/servers/server-generic.png';
+    }
+  }
+  
+  /**
+   * 創建降級方案（彩色方塊）
+   */
+  private createFallbackSprite() {
     const colors = {
-      developer: 0x4A90E2,  // 藍色
-      database: 0xF5A623,   // 橘色
-      web: 0x7ED321,        // 綠色
-      generic: 0x9E9E9E     // 灰色
+      developer: 0x4A90E2,
+      database: 0xF5A623,
+      web: 0x7ED321,
+      generic: 0x9E9E9E
     };
     
     const color = colors[this.server.visual.type] || colors.generic;
-    const sprite = createPlaceholderSprite(color, 32, 32);
-    sprite.pivot.set(16, 16);
+    const graphics = new PIXI.Graphics();
+    graphics.rect(-16, -16, 32, 32);
+    graphics.fill(color);
+    graphics.pivot.set(0, 0);
     
-    return sprite;
+    this.container.addChildAt(graphics, 0);
   }
   
   /**
@@ -128,6 +192,11 @@ export class ServerSprite {
     
     // 更新資源條
     this.updateResourceBars();
+    
+    // 切換動畫
+    if (this.animationTextures.length > 0) {
+      this.loadAnimationFrames();
+    }
   }
   
   /**
@@ -136,12 +205,21 @@ export class ServerSprite {
   update(delta: number) {
     this.animationFrame += this.animationSpeed * delta;
     
+    // 播放動畫
+    if (this.sprite && this.animationTextures.length > 0) {
+      const frameIndex = Math.floor(this.animationFrame / 10) % this.animationTextures.length;
+      if (frameIndex !== this.currentFrame) {
+        this.currentFrame = frameIndex;
+        this.sprite.texture = this.animationTextures[frameIndex];
+      }
+    }
+    
     // 工作中動畫：輕微晃動
-    if (this.server.currentTask) {
+    if (this.server.currentTask && this.sprite) {
       const offset = Math.sin(this.animationFrame) * 2;
-      this.characterSprite.position.y = offset;
-    } else {
-      this.characterSprite.position.y = 0;
+      this.sprite.position.y = offset;
+    } else if (this.sprite) {
+      this.sprite.position.y = 0;
     }
   }
   
