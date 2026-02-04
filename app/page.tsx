@@ -7,9 +7,13 @@ export default function Home() {
   const [selectedServer, setSelectedServer] = useState<any>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #e0f2fe 0%, #ede9fe 50%, #fce7f3 100%)' }}>
       {/* 🎮 開羅風格頂部狀態欄 */}
-      <header className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 border-b-4 border-yellow-600 shadow-lg">
+      <header style={{ 
+        background: 'linear-gradient(90deg, #fbbf24 0%, #f97316 50%, #ef4444 100%)',
+        borderBottom: '4px solid #d97706',
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+      }}>
         <div className="px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Logo + 標題 */}
@@ -106,42 +110,108 @@ export default function Home() {
             
             <div className="space-y-3">
               {/* 進行中任務 */}
-              <div className="bg-gradient-to-br from-blue-100 to-blue-50 border-2 border-blue-400 rounded-xl p-4 shadow-lg transform hover:scale-105 transition-all">
+              <div style={{
+                background: 'linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%)',
+                border: '3px solid #3b82f6',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 4px 12px rgba(59,130,246,0.3)',
+                transition: 'all 0.3s ease'
+              }} className="transform hover:scale-105">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">⚡</span>
                   <div className="flex-1">
                     <div className="font-bold text-blue-900 mb-1">部署 VVE 應用</div>
                     <div className="text-sm text-blue-700 mb-2">部署前端到開發機</div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs px-2 py-1 bg-blue-500 text-white rounded-full font-bold">開發機</span>
+                      <span style={{
+                        background: '#3b82f6',
+                        color: 'white',
+                        padding: '4px 12px',
+                        borderRadius: '9999px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                      }}>開發機</span>
                       <span className="text-xs text-blue-600 font-bold">73%</span>
                     </div>
                     {/* 進度條 */}
-                    <div className="w-full bg-blue-200 rounded-full h-3 overflow-hidden shadow-inner">
-                      <div 
-                        className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500 animate-pulse"
-                        style={{ width: '73%' }}
-                      ></div>
+                    <div style={{
+                      width: '100%',
+                      height: '12px',
+                      background: '#bfdbfe',
+                      borderRadius: '9999px',
+                      overflow: 'hidden',
+                      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)'
+                    }}>
+                      <div style={{
+                        height: '100%',
+                        width: '73%',
+                        background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)',
+                        borderRadius: '9999px',
+                        transition: 'width 0.5s ease',
+                        position: 'relative'
+                      }}>
+                        <div style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                          backgroundSize: '200% 100%',
+                          animation: 'shimmer 2s infinite'
+                        }}></div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-br from-yellow-100 to-yellow-50 border-2 border-yellow-400 rounded-xl p-4 shadow-lg transform hover:scale-105 transition-all">
+              <div style={{
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%)',
+                border: '3px solid #eab308',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 4px 12px rgba(234,179,8,0.3)',
+                transition: 'all 0.3s ease'
+              }} className="transform hover:scale-105">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">💾</span>
                   <div className="flex-1">
                     <div className="font-bold text-yellow-900 mb-1">備份資料庫</div>
                     <div className="text-sm text-yellow-700 mb-2">每日自動備份</div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs px-2 py-1 bg-yellow-500 text-white rounded-full font-bold">資料庫</span>
+                      <span style={{
+                        background: '#eab308',
+                        color: 'white',
+                        padding: '4px 12px',
+                        borderRadius: '9999px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                      }}>資料庫</span>
                       <span className="text-xs text-yellow-600 font-bold">90%</span>
                     </div>
-                    <div className="w-full bg-yellow-200 rounded-full h-3 overflow-hidden shadow-inner">
-                      <div 
-                        className="h-full bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full transition-all duration-500 animate-pulse"
-                        style={{ width: '90%' }}
-                      ></div>
+                    <div style={{
+                      width: '100%',
+                      height: '12px',
+                      background: '#fde68a',
+                      borderRadius: '9999px',
+                      overflow: 'hidden',
+                      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)'
+                    }}>
+                      <div style={{
+                        height: '100%',
+                        width: '90%',
+                        background: 'linear-gradient(90deg, #eab308 0%, #f97316 100%)',
+                        borderRadius: '9999px',
+                        transition: 'width 0.5s ease',
+                        position: 'relative'
+                      }}>
+                        <div style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                          backgroundSize: '200% 100%',
+                          animation: 'shimmer 2s infinite'
+                        }}></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -182,7 +252,13 @@ export default function Home() {
             
             <div className="space-y-4">
               {/* CPU */}
-              <div className="bg-gradient-to-br from-blue-100 to-blue-50 border-2 border-blue-400 rounded-xl p-4 shadow-lg">
+              <div style={{
+                background: 'linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%)',
+                border: '3px solid #3b82f6',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 6px 16px rgba(59,130,246,0.4)'
+              }}>
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">🔥</span>
@@ -190,18 +266,40 @@ export default function Home() {
                   </div>
                   <span className="text-2xl font-bold text-blue-600">46%</span>
                 </div>
-                <div className="w-full bg-blue-200 rounded-full h-4 overflow-hidden shadow-inner">
-                  <div 
-                    className="h-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-full transition-all duration-700 relative"
-                    style={{ width: '46%' }}
-                  >
-                    <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
+                <div style={{
+                  width: '100%',
+                  height: '16px',
+                  background: '#bfdbfe',
+                  borderRadius: '9999px',
+                  overflow: 'hidden',
+                  boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.15)'
+                }}>
+                  <div style={{
+                    height: '100%',
+                    width: '46%',
+                    background: 'linear-gradient(90deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)',
+                    borderRadius: '9999px',
+                    transition: 'width 0.7s ease',
+                    position: 'relative'
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'rgba(255,255,255,0.3)',
+                      animation: 'pulse 2s infinite'
+                    }}></div>
                   </div>
                 </div>
               </div>
               
               {/* RAM */}
-              <div className="bg-gradient-to-br from-purple-100 to-purple-50 border-2 border-purple-400 rounded-xl p-4 shadow-lg">
+              <div style={{
+                background: 'linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%)',
+                border: '3px solid #a855f7',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 6px 16px rgba(168,85,247,0.4)'
+              }}>
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">💾</span>
@@ -209,18 +307,40 @@ export default function Home() {
                   </div>
                   <span className="text-2xl font-bold text-purple-600">63%</span>
                 </div>
-                <div className="w-full bg-purple-200 rounded-full h-4 overflow-hidden shadow-inner">
-                  <div 
-                    className="h-full bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 rounded-full transition-all duration-700 relative"
-                    style={{ width: '63%' }}
-                  >
-                    <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
+                <div style={{
+                  width: '100%',
+                  height: '16px',
+                  background: '#e9d5ff',
+                  borderRadius: '9999px',
+                  overflow: 'hidden',
+                  boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.15)'
+                }}>
+                  <div style={{
+                    height: '100%',
+                    width: '63%',
+                    background: 'linear-gradient(90deg, #c084fc 0%, #a855f7 50%, #9333ea 100%)',
+                    borderRadius: '9999px',
+                    transition: 'width 0.7s ease',
+                    position: 'relative'
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'rgba(255,255,255,0.3)',
+                      animation: 'pulse 2s infinite'
+                    }}></div>
                   </div>
                 </div>
               </div>
               
               {/* 磁碟 */}
-              <div className="bg-gradient-to-br from-green-100 to-green-50 border-2 border-green-400 rounded-xl p-4 shadow-lg">
+              <div style={{
+                background: 'linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%)',
+                border: '3px solid #22c55e',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 6px 16px rgba(34,197,94,0.4)'
+              }}>
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">💿</span>
@@ -228,12 +348,28 @@ export default function Home() {
                   </div>
                   <span className="text-2xl font-bold text-green-600">47%</span>
                 </div>
-                <div className="w-full bg-green-200 rounded-full h-4 overflow-hidden shadow-inner">
-                  <div 
-                    className="h-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-full transition-all duration-700 relative"
-                    style={{ width: '47%' }}
-                  >
-                    <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
+                <div style={{
+                  width: '100%',
+                  height: '16px',
+                  background: '#bbf7d0',
+                  borderRadius: '9999px',
+                  overflow: 'hidden',
+                  boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.15)'
+                }}>
+                  <div style={{
+                    height: '100%',
+                    width: '47%',
+                    background: 'linear-gradient(90deg, #4ade80 0%, #22c55e 50%, #16a34a 100%)',
+                    borderRadius: '9999px',
+                    transition: 'width 0.7s ease',
+                    position: 'relative'
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'rgba(255,255,255,0.3)',
+                      animation: 'pulse 2s infinite'
+                    }}></div>
                   </div>
                 </div>
               </div>
