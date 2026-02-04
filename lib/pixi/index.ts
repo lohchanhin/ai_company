@@ -2,26 +2,30 @@
 
 import * as PIXI from 'pixi.js';
 
+export interface PixiAppConfig {
+  width: number;
+  height: number;
+  backgroundColor?: number;
+}
+
 export class PixiApp {
-  app: PIXI.Application;
-  container: HTMLElement | null = null;
+  private app: PIXI.Application | null = null;
+  private config: PixiAppConfig;
   
-  constructor() {
-    this.app = new PIXI.Application();
+  constructor(config: PixiAppConfig) {
+    this.config = config;
   }
   
-  async init(container: HTMLElement, width: number, height: number) {
-    this.container = container;
+  async init(): Promise<PIXI.Application> {
+    this.app = new PIXI.Application();
     
     await this.app.init({
-      width,
-      height,
-      backgroundColor: 0xE8E8E8,
+      width: this.config.width,
+      height: this.config.height,
+      backgroundColor: this.config.backgroundColor || 0xE8E8E8,
       antialias: false, // 像素風格不需要抗鋸齒
       resolution: window.devicePixelRatio || 1,
     });
-    
-    container.appendChild(this.app.canvas);
     
     // 設置像素風格
     PIXI.TextureStyle.defaultOptions.scaleMode = 'nearest';
@@ -29,18 +33,18 @@ export class PixiApp {
     return this.app;
   }
   
+  getApp(): PIXI.Application | null {
+    return this.app;
+  }
+  
   destroy() {
-    // 檢查 app 是否存在
     if (!this.app) return;
-    
-    // Pixi.js 8.x: destroy() handles cleanup automatically
-    this.app.destroy();
+    this.app.destroy(true);
+    this.app = null;
   }
   
   resize(width: number, height: number) {
-    // 檢查 app 和 renderer 是否存在
     if (!this.app?.renderer) return;
-    
     this.app.renderer.resize(width, height);
   }
 }
