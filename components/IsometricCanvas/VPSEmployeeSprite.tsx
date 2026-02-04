@@ -68,24 +68,27 @@ export class VPSEmployeeSprite {
     
     const color = this.getColorFromStatus(vpsStatus);
     
-    // 繪製員工身體（等距矩形）
-    this.graphics.beginFill(color);
-    
     // 頭部
-    this.graphics.drawCircle(0, -10, 6);
+    this.graphics.circle(0, -10, 6);
+    this.graphics.fill(color);
     
     // 身體
-    this.graphics.drawRect(-8, -5, 16, 15);
+    this.graphics.rect(-8, -5, 16, 15);
+    this.graphics.fill(color);
     
     // 手臂
-    this.graphics.drawRect(-12, -2, 4, 8);
-    this.graphics.drawRect(8, -2, 4, 8);
+    this.graphics.rect(-12, -2, 4, 8);
+    this.graphics.fill(color);
+    
+    this.graphics.rect(8, -2, 4, 8);
+    this.graphics.fill(color);
     
     // 腿
-    this.graphics.drawRect(-6, 10, 5, 10);
-    this.graphics.drawRect(1, 10, 5, 10);
+    this.graphics.rect(-6, 10, 5, 10);
+    this.graphics.fill(color);
     
-    this.graphics.endFill();
+    this.graphics.rect(1, 10, 5, 10);
+    this.graphics.fill(color);
     
     // 更新狀態文字
     if (vpsStatus.metrics) {

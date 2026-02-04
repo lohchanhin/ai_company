@@ -31,7 +31,6 @@ export class FloorTileSprite {
     const iso = toIsometric(this.gridX, this.gridY);
     
     this.graphics.clear();
-    this.graphics.beginFill(this.color);
     this.graphics.alpha = 0.6;
     
     // 繪製等距地磚（菱形）
@@ -43,16 +42,15 @@ export class FloorTileSprite {
     this.graphics.lineTo(iso.isoX, iso.isoY + tileHeight / 2); // 下
     this.graphics.lineTo(iso.isoX - tileWidth / 2, iso.isoY);  // 左
     this.graphics.lineTo(iso.isoX, iso.isoY - tileHeight / 2); // 回到上
-    
-    this.graphics.endFill();
+    this.graphics.fill(this.color);
     
     // 邊框
-    this.graphics.lineStyle(1, 0x000000, 0.2);
     this.graphics.moveTo(iso.isoX, iso.isoY - tileHeight / 2);
     this.graphics.lineTo(iso.isoX + tileWidth / 2, iso.isoY);
     this.graphics.lineTo(iso.isoX, iso.isoY + tileHeight / 2);
     this.graphics.lineTo(iso.isoX - tileWidth / 2, iso.isoY);
     this.graphics.lineTo(iso.isoX, iso.isoY - tileHeight / 2);
+    this.graphics.stroke({ width: 1, color: 0x000000, alpha: 0.2 });
   }
   
   public destroy() {
