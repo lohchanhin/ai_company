@@ -182,26 +182,9 @@ export function VPSOfficeCanvas() {
     console.log('VPS statuses updated:', statuses.length);
   }, [statuses]);
   
-  if (loading && statuses.length === 0) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">正在連線到 VPS...</p>
-        </div>
-      </div>
-    );
-  }
-  
+  // 錯誤提示（但仍然顯示 Canvas）
   if (error) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <p className="text-red-500 mb-2">⚠️ 連線失敗</p>
-          <p className="text-gray-600 text-sm">{error}</p>
-        </div>
-      </div>
-    );
+    console.error('VPS Monitor Error:', error);
   }
   
   return (
@@ -211,6 +194,11 @@ export function VPSOfficeCanvas() {
       style={{ minHeight: '600px' }}
     >
       {/* Pixi canvas 會被注入這裡 */}
+      {loading && statuses.length === 0 && (
+        <div className="absolute top-4 right-4 text-sm text-gray-500">
+          正在載入 VPS 數據...
+        </div>
+      )}
     </div>
   );
 }
