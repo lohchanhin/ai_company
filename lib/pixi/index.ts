@@ -30,8 +30,8 @@ export class PixiApp {
   }
   
   destroy() {
-    // Pixi.js 8.x: destroy with removeView option removes canvas automatically
-    this.app.destroy(true, { removeView: true });
+    // Pixi.js 8.x: destroy() handles cleanup automatically
+    this.app.destroy();
   }
   
   resize(width: number, height: number) {
