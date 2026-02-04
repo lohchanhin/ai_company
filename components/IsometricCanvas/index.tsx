@@ -21,11 +21,19 @@ export function IsometricCanvas({ servers, onServerClick }: IsometricCanvasProps
   useEffect(() => {
     if (!canvasRef.current) return;
     
+    let isCleanedUp = false;
+    
     // 初始化 Pixi
     const pixiApp = new PixiApp();
     pixiAppRef.current = pixiApp;
     
     pixiApp.init(canvasRef.current, dimensions.width, dimensions.height).then((app) => {
+      // 如果已經清理了，不要繼續
+      if (isCleanedUp) {
+        pixiApp.destroy();
+        return;
+      }
+      
       // 創建主容器（用於平移和縮放）
       const mainContainer = new PIXI.Container();
       app.stage.addChild(mainContainer);
@@ -36,13 +44,15 @@ export function IsometricCanvas({ servers, onServerClick }: IsometricCanvasProps
       // 創建伺服器精靈
       servers.forEach((server) => {
         const sprite = new ServerSprite(server);
-        mainContainer.addChild(sprite.container);
-        serverSpritesRef.current.set(server.id, sprite);
-        
-        // 點擊事件
-        sprite.container.on('pointerdown', () => {
-          onServerClick?.(server);
-        });
+        if (sprite.container) {
+          mainContainer.addChild(sprite.container);
+          serverSpritesRef.current.set(server.id, sprite);
+          
+          // 點擊事件
+          sprite.container.on('pointerdown', () => {
+            onServerClick?.(server);
+          });
+        }
       });
       
       // 動畫循環
@@ -55,11 +65,28 @@ export function IsometricCanvas({ servers, onServerClick }: IsometricCanvasProps
     
     // 清理
     return () => {
-      serverSpritesRef.current.forEach((sprite) => sprite.destroy());
+      isCleanedUp = true;
+      
+      serverSpritesRef.current.forEach((sprite) => {
+        try {
+          sprite.destroy();
+        } catch (e) {
+          console.warn('Failed to destroy sprite:', e);
+        }
+      });
       serverSpritesRef.current.clear();
-      pixiApp.destroy();
+      
+      // 安全清理 Pixi App
+      if (pixiAppRef.current) {
+        try {
+          pixiAppRef.current.destroy();
+        } catch (e) {
+          console.warn('Failed to destroy Pixi app:', e);
+        }
+        pixiAppRef.current = null;
+      }
     };
-  }, [dimensions.width, dimensions.height]);
+  }, []); // 移除 dimensions 依賴，改用 resize 處理
   
   // 更新伺服器狀態
   useEffect(() => {
@@ -76,10 +103,18 @@ export function IsometricCanvas({ servers, onServerClick }: IsometricCanvasProps
     const handleResize = () => {
       if (canvasRef.current) {
         const rect = canvasRef.current.getBoundingClientRect();
+        const newWidth = rect.width;
+        const newHeight = Math.max(600, window.innerHeight - 200);
+        
         setDimensions({
-          width: rect.width,
-          height: Math.max(600, window.innerHeight - 200)
+          width: newWidth,
+          height: newHeight
         });
+        
+        // 調整 Pixi App 大小
+        if (pixiAppRef.current) {
+          pixiAppRef.current.resize(newWidth, newHeight);
+        }
       }
     };
     
