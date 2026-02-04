@@ -161,3 +161,23 @@ export const FLOOR_SPRITES: Record<string, string> = {
   'green-carpet': 'sprites/floors/green-carpet.png',
   'red-carpet': 'sprites/floors/red-carpet.png',
 };
+
+/**
+ * 根據網格座標判定地板類型
+ */
+export function getFloorTypeForZone(gridX: number, gridY: number): string {
+  // 開發區（Y=0-2）：藍色地毯
+  if (gridY >= 0 && gridY <= 2) return 'blue-carpet';
+  
+  // 會議區（Y=3-4）：灰色地毯
+  if (gridY >= 3 && gridY <= 4) return 'gray-carpet';
+  
+  // 休息區（Y=5-6）：綠色地毯
+  if (gridY >= 5 && gridY <= 6) return 'green-carpet';
+  
+  // 管理區（Y=7）：紅色地毯
+  if (gridY >= 7) return 'red-carpet';
+  
+  // 預設：木地板
+  return 'wood-floor';
+}
