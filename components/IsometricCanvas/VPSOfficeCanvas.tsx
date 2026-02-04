@@ -30,6 +30,8 @@ export function VPSOfficeCanvas() {
     const height = canvasRef.current.clientHeight || 600;
     
     pixiApp.init(canvasRef.current, width, height).then((app) => {
+      console.log('✅ Pixi initialized:', { width, height, stage: app.stage });
+      
       if (isCleanedUp) {
         pixiApp.destroy();
         return;
@@ -40,12 +42,15 @@ export function VPSOfficeCanvas() {
       app.stage.addChild(mainContainer);
       mainContainer.position.set(width / 2, 150);
       
+      console.log('📦 Main container created at:', mainContainer.position);
+      
       // ===== 建立辦公室地板 =====
       const floorContainer = new PIXI.Container();
       mainContainer.addChild(floorContainer);
       
       // 8x8 辦公室格子
       const officeSize = 8;
+      let floorTileCount = 0;
       
       for (let y = 0; y < officeSize; y++) {
         for (let x = 0; x < officeSize; x++) {
@@ -64,8 +69,11 @@ export function VPSOfficeCanvas() {
           
           const tile = new FloorTileSprite(x, y, floorType);
           floorContainer.addChild(tile.graphics);
+          floorTileCount++;
         }
       }
+      
+      console.log(`🎨 Floor tiles created: ${floorTileCount}`);
       
       // ===== 建立辦公家具 =====
       const furnitureContainer = new PIXI.Container();
@@ -141,6 +149,8 @@ export function VPSOfficeCanvas() {
           }
         });
       });
+    }).catch((err) => {
+      console.error('❌ Pixi initialization failed:', err);
     });
     
     return () => {
