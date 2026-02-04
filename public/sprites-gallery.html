@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VPS Kairosoft - 像素藝術素材庫</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #7f8c8d;
+      margin-bottom: 40px;
+      font-size: 1.1em;
+    }
+    
+    .category {
+      margin-bottom: 50px;
+    }
+    
+    .category-title {
+      color: #34495e;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #3498db;
+    }
+    
+    .sprite-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .sprite-card {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid #e9ecef;
+    }
+    
+    .sprite-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border-color: #3498db;
+    }
+    
+    .sprite-preview {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 15px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #dee2e6;
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+    
+    .sprite-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      image-rendering: pixelated;
+    }
+    
+    .sprite-name {
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+    
+    .sprite-size {
+      color: #95a5a6;
+      font-size: 0.8em;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 1em;
+      opacity: 0.9;
+    }
+    
+    .footer {
+      text-align: center;
+      color: #7f8c8d;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #e9ecef;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 VPS Kairosoft 像素藝術素材庫</h1>
+    <p class="subtitle">Kairosoft 風格的辦公室管理遊戲素材</p>
+    
+    <!-- 統計卡片 -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number">28</div>
+        <div class="stat-label">總素材數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">32×32</div>
+        <div class="stat-label">像素尺寸</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">~15KB</div>
+        <div class="stat-label">總檔案大小</div>
+      </div>
+    </div>
+    
+    <!-- 角色系列 -->
+    <div class="category">
+      <h2 class="category-title">👤 角色系列</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/characters/developer-idle-1.png" alt="Developer Idle 1">
+          </div>
+          <div class="sprite-name">開發者 - Idle 1</div>
+          <div class="sprite-size">262 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/characters/developer-idle-2.png" alt="Developer Idle 2">
+          </div>
+          <div class="sprite-name">開發者 - Idle 2</div>
+          <div class="sprite-size">260 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/characters/developer-working-1.png" alt="Developer Working 1">
+          </div>
+          <div class="sprite-name">開發者 - Working 1</div>
+          <div class="sprite-size">259 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/characters/developer-working-2.png" alt="Developer Working 2">
+          </div>
+          <div class="sprite-name">開發者 - Working 2</div>
+          <div class="sprite-size">263 bytes</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 伺服器系列 -->
+    <div class="category">
+      <h2 class="category-title">🖥️ 伺服器系列</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/servers/server-database.png" alt="Database Server">
+          </div>
+          <div class="sprite-name">資料庫伺服器</div>
+          <div class="sprite-size">721 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/servers/server-web.png" alt="Web Server">
+          </div>
+          <div class="sprite-name">Web 伺服器</div>
+          <div class="sprite-size">916 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/servers/server-generic.png" alt="Generic Server">
+          </div>
+          <div class="sprite-name">通用伺服器</div>
+          <div class="sprite-size">558 bytes</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 植物系列 -->
+    <div class="category">
+      <h2 class="category-title">🪴 植物系列</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/plant-small.png" alt="Small Plant">
+          </div>
+          <div class="sprite-name">小盆栽</div>
+          <div class="sprite-size">731 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/plant-medium.png" alt="Medium Plant">
+          </div>
+          <div class="sprite-name">中盆栽</div>
+          <div class="sprite-size">1.2 KB</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/plant-large.png" alt="Large Plant">
+          </div>
+          <div class="sprite-name">大盆栽</div>
+          <div class="sprite-size">1.4 KB</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 家具系列 -->
+    <div class="category">
+      <h2 class="category-title">🛋️ 家具系列</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/sofa.png" alt="Sofa">
+          </div>
+          <div class="sprite-name">沙發</div>
+          <div class="sprite-size">216 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/break-room-table.png" alt="Table">
+          </div>
+          <div class="sprite-name">茶水間桌子</div>
+          <div class="sprite-size">229 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/filing-cabinet.png" alt="Filing Cabinet">
+          </div>
+          <div class="sprite-name">文件櫃</div>
+          <div class="sprite-size">490 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/bookshelf.png" alt="Bookshelf">
+          </div>
+          <div class="sprite-name">書架</div>
+          <div class="sprite-size">1.6 KB</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 電器系列 -->
+    <div class="category">
+      <h2 class="category-title">⚡ 電器系列</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/object-monitor.png" alt="Monitor">
+          </div>
+          <div class="sprite-name">螢幕</div>
+          <div class="sprite-size">222 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/object-keyboard.png" alt="Keyboard">
+          </div>
+          <div class="sprite-name">鍵盤</div>
+          <div class="sprite-size">203 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/coffee-machine.png" alt="Coffee Machine">
+          </div>
+          <div class="sprite-name">咖啡機</div>
+          <div class="sprite-size">543 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/game-console.png" alt="Game Console">
+          </div>
+          <div class="sprite-name">遊戲機</div>
+          <div class="sprite-size">471 bytes</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 照明系列 -->
+    <div class="category">
+      <h2 class="category-title">💡 照明系列</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/floor-lamp.png" alt="Floor Lamp">
+          </div>
+          <div class="sprite-name">落地燈</div>
+          <div class="sprite-size">532 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/ceiling-lamp.png" alt="Ceiling Lamp">
+          </div>
+          <div class="sprite-name">吊燈</div>
+          <div class="sprite-size">760 bytes</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 裝飾系列 -->
+    <div class="category">
+      <h2 class="category-title">🎨 裝飾系列</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/wall-poster.png" alt="Wall Poster">
+          </div>
+          <div class="sprite-name">牆上海報</div>
+          <div class="sprite-size">506 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/clock.png" alt="Clock">
+          </div>
+          <div class="sprite-name">時鐘</div>
+          <div class="sprite-size">997 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/whiteboard.png" alt="Whiteboard">
+          </div>
+          <div class="sprite-name">白板</div>
+          <div class="sprite-size">496 bytes</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 建築系列 -->
+    <div class="category">
+      <h2 class="category-title">🏢 建築系列</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/window.png" alt="Window">
+          </div>
+          <div class="sprite-name">窗戶</div>
+          <div class="sprite-size">217 bytes</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/door.png" alt="Door">
+          </div>
+          <div class="sprite-name">門</div>
+          <div class="sprite-size">495 bytes</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 雜項 -->
+    <div class="category">
+      <h2 class="category-title">📦 雜項</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/box.png" alt="Box">
+          </div>
+          <div class="sprite-name">箱子</div>
+          <div class="sprite-size">-</div>
+        </div>
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/objects/trash-bin.png" alt="Trash Bin">
+          </div>
+          <div class="sprite-name">垃圾桶</div>
+          <div class="sprite-size">616 bytes</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 地板 -->
+    <div class="category">
+      <h2 class="category-title">🟫 地板</h2>
+      <div class="sprite-grid">
+        <div class="sprite-card">
+          <div class="sprite-preview">
+            <img src="/sprites/tiles/floor-tile.png" alt="Floor Tile">
+          </div>
+          <div class="sprite-name">等距地磚</div>
+          <div class="sprite-size">633 bytes</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p><strong>VPS Kairosoft</strong> - 開羅風格 VPS 管理工具</p>
+      <p>所有素材使用 ImageMagick 生成 • 32×32 像素 • PNG 格式</p>
+      <p style="margin-top: 10px; color: #3498db;">
+        <a href="/" style="color: inherit; text-decoration: none;">← 返回主頁</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
