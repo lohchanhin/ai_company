@@ -4,6 +4,18 @@ import { useState } from 'react';
 import { IsometricCanvas } from '@/components/IsometricCanvas';
 import { Server } from '@/types';
 
+// 任務類型
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: 'pending' | 'running' | 'completed';
+  serverId?: string;
+  progress?: number;
+  startTime?: number;
+  estimatedTime?: number;
+}
+
 // 模擬數據
 const mockServers: Server[] = [
   {
@@ -12,18 +24,9 @@ const mockServers: Server[] = [
     host: '143.198.202.94',
     port: 22,
     username: 'root',
-    visual: {
-      type: 'developer',
-      gridX: 0,
-      gridY: 0
-    },
-    status: {
-      online: true,
-      cpu: 65,
-      memory: 78,
-      disk: 40,
-      uptime: 86400
-    }
+    visual: { type: 'developer', gridX: 0, gridY: 0 },
+    status: { online: true, cpu: 65, memory: 78, disk: 40, uptime: 86400 },
+    currentTask: '部署應用'
   },
   {
     id: '2',
@@ -31,18 +34,8 @@ const mockServers: Server[] = [
     host: '192.168.1.100',
     port: 22,
     username: 'root',
-    visual: {
-      type: 'developer',
-      gridX: 2,
-      gridY: 0
-    },
-    status: {
-      online: true,
-      cpu: 12,
-      memory: 25,
-      disk: 30,
-      uptime: 43200
-    }
+    visual: { type: 'developer', gridX: 2, gridY: 0 },
+    status: { online: true, cpu: 12, memory: 25, disk: 30, uptime: 43200 }
   },
   {
     id: '3',
@@ -50,18 +43,9 @@ const mockServers: Server[] = [
     host: '192.168.1.101',
     port: 22,
     username: 'root',
-    visual: {
-      type: 'database',
-      gridX: 0,
-      gridY: 2
-    },
-    status: {
-      online: true,
-      cpu: 95,
-      memory: 98,
-      disk: 75,
-      uptime: 172800
-    }
+    visual: { type: 'database', gridX: 0, gridY: 2 },
+    status: { online: true, cpu: 95, memory: 98, disk: 75, uptime: 172800 },
+    currentTask: '備份資料'
   },
   {
     id: '4',
@@ -69,23 +53,23 @@ const mockServers: Server[] = [
     host: '192.168.1.102',
     port: 22,
     username: 'root',
-    visual: {
-      type: 'web',
-      gridX: 2,
-      gridY: 2
-    },
-    status: {
-      online: true,
-      cpu: 45,
-      memory: 60,
-      disk: 50,
-      uptime: 259200
-    }
+    visual: { type: 'web', gridX: 2, gridY: 2 },
+    status: { online: true, cpu: 45, memory: 60, disk: 50, uptime: 259200 }
   }
+];
+
+const mockTasks: Task[] = [
+  { id: 't1', title: '部署 VVE 應用', description: '部署前端到開發機', status: 'running', serverId: '1', progress: 65, startTime: Date.now() - 30000, estimatedTime: 60000 },
+  { id: 't2', title: '備份資料庫', description: '每日自動備份', status: 'running', serverId: '3', progress: 80, startTime: Date.now() - 120000, estimatedTime: 180000 },
+  { id: 't3', title: '清理日誌檔案', description: '清理超過 30 天的日誌', status: 'pending', serverId: '2' },
+  { id: 't4', title: '更新系統套件', description: 'apt-get update && upgrade', status: 'pending', serverId: '4' },
+  { id: 't5', title: '檢查磁碟空間', description: '已完成', status: 'completed', serverId: '1' },
+  { id: 't6', title: '重啟 Nginx', description: '已完成', status: 'completed', serverId: '4' }
 ];
 
 export default function Home() {
   const [servers, setServers] = useState<Server[]>(mockServers);
+  const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [selectedServer, setSelectedServer] = useState<Server | null>(null);
   
   // 模擬資源更新
@@ -99,10 +83,30 @@ export default function Home() {
           memory: Math.max(0, Math.min(100, server.status.memory + (Math.random() - 0.5) * 5))
         }
       })));
+      
+      // 更新任務進度
+      setTasks(prev => prev.map(task => {
+        if (task.status === 'running' && task.progress !== undefined) {
+          const newProgress = Math.min(100, task.progress + Math.random() * 5);
+          if (newProgress >= 100) {
+            return { ...task, status: 'completed', progress: 100 };
+          }
+          return { ...task, progress: newProgress };
+        }
+        return task;
+      }));
     }, 2000);
     
     return () => clearInterval(interval);
   });
+  
+  const pendingTasks = tasks.filter(t => t.status === 'pending');
+  const runningTasks = tasks.filter(t => t.status === 'running');
+  const completedTasks = tasks.filter(t => t.status === 'completed');
+  
+  const avgCpu = Math.round(servers.reduce((sum, s) => sum + s.status.cpu, 0) / servers.length);
+  const avgMemory = Math.round(servers.reduce((sum, s) => sum + s.status.memory, 0) / servers.length);
+  const avgDisk = Math.round(servers.reduce((sum, s) => sum + s.status.disk, 0) / servers.length);
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -114,112 +118,202 @@ export default function Home() {
             <p className="text-sm text-gray-500">開羅風格可視化管理工具</p>
           </div>
           <div className="flex items-center gap-4">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
               新增伺服器
             </button>
-            <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-              設定
+            <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
+              新增任務
             </button>
+            <a 
+              href="/sprites-gallery.html" 
+              target="_blank"
+              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition"
+            >
+              素材畫廊
+            </a>
           </div>
         </div>
       </header>
       
-      <div className="flex h-[calc(100vh-80px)]">
-        {/* 左側：等距畫布 */}
-        <div className="flex-1 p-4">
-          <IsometricCanvas 
-            servers={servers} 
-            onServerClick={setSelectedServer}
-          />
+      <div className="flex h-[calc(100vh-88px)]">
+        {/* 左側：等距辦公室 Canvas (70%) */}
+        <div className="flex-1 p-6">
+          <div className="h-full bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+            <IsometricCanvas 
+              servers={servers} 
+              onServerClick={setSelectedServer}
+            />
+          </div>
         </div>
         
-        {/* 右側：資訊面板 */}
-        <div className="w-80 bg-white border-l border-gray-200 p-4 overflow-y-auto">
-          <h2 className="text-lg font-bold mb-4">📊 系統總覽</h2>
+        {/* 右側：任務 + 資源面板 (30%) */}
+        <div className="w-96 bg-white border-l border-gray-200 overflow-y-auto">
           
-          <div className="space-y-4">
-            <div className="p-3 bg-gray-50 rounded">
-              <div className="text-sm text-gray-600">伺服器數量</div>
-              <div className="text-2xl font-bold">{servers.length} 台</div>
-            </div>
+          {/* 任務清單區 */}
+          <div className="p-4 border-b border-gray-200">
+            <h2 className="text-lg font-bold mb-4 flex items-center">
+              📋 任務清單
+              <span className="ml-auto text-sm font-normal text-gray-500">
+                {runningTasks.length} 進行中
+              </span>
+            </h2>
             
-            <div className="p-3 bg-green-50 rounded">
-              <div className="text-sm text-gray-600">🟢 Online</div>
-              <div className="text-2xl font-bold text-green-600">
-                {servers.filter(s => s.status.online).length}
+            {/* 進行中的任務 */}
+            {runningTasks.length > 0 && (
+              <div className="mb-4">
+                <div className="text-sm font-semibold text-blue-600 mb-2">🔄 進行中</div>
+                <div className="space-y-2">
+                  {runningTasks.map(task => (
+                    <div key={task.id} className="p-3 bg-blue-50 border border-blue-200 rounded">
+                      <div className="flex items-start justify-between mb-1">
+                        <div className="font-medium text-sm">{task.title}</div>
+                        <div className="text-xs text-blue-600 font-mono">
+                          {task.progress?.toFixed(0)}%
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">{task.description}</div>
+                      <div className="w-full bg-blue-200 rounded-full h-1.5">
+                        <div 
+                          className="bg-blue-500 h-1.5 rounded-full transition-all"
+                          style={{ width: `${task.progress || 0}%` }}
+                        />
+                      </div>
+                      {task.serverId && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          🖥️ {servers.find(s => s.id === task.serverId)?.name}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             
-            <div className="p-3 bg-blue-50 rounded">
-              <div className="text-sm text-gray-600">平均 CPU</div>
-              <div className="text-2xl font-bold text-blue-600">
-                {Math.round(servers.reduce((sum, s) => sum + s.status.cpu, 0) / servers.length)}%
+            {/* 待執行的任務 */}
+            {pendingTasks.length > 0 && (
+              <div className="mb-4">
+                <div className="text-sm font-semibold text-yellow-600 mb-2">⏳ 待執行</div>
+                <div className="space-y-2">
+                  {pendingTasks.map(task => (
+                    <div key={task.id} className="p-3 bg-yellow-50 border border-yellow-200 rounded">
+                      <div className="font-medium text-sm mb-1">{task.title}</div>
+                      <div className="text-xs text-gray-600">{task.description}</div>
+                      {task.serverId && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          🖥️ {servers.find(s => s.id === task.serverId)?.name}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             
-            <div className="p-3 bg-purple-50 rounded">
-              <div className="text-sm text-gray-600">平均 RAM</div>
-              <div className="text-2xl font-bold text-purple-600">
-                {Math.round(servers.reduce((sum, s) => sum + s.status.memory, 0) / servers.length)}%
+            {/* 已完成的任務 */}
+            {completedTasks.length > 0 && (
+              <div>
+                <div className="text-sm font-semibold text-green-600 mb-2">✅ 已完成</div>
+                <div className="space-y-2">
+                  {completedTasks.slice(0, 3).map(task => (
+                    <div key={task.id} className="p-3 bg-green-50 border border-green-200 rounded opacity-75">
+                      <div className="font-medium text-sm mb-1">{task.title}</div>
+                      <div className="text-xs text-gray-600">{task.description}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* 資源監控區 */}
+          <div className="p-4 border-b border-gray-200">
+            <h2 className="text-lg font-bold mb-4">📊 資源監控</h2>
+            
+            <div className="space-y-3">
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-600">平均 CPU</span>
+                  <span className="text-lg font-bold text-blue-600">{avgCpu}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-blue-500 h-2 rounded-full transition-all"
+                    style={{ width: `${avgCpu}%` }}
+                  />
+                </div>
+              </div>
+              
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-600">平均 RAM</span>
+                  <span className="text-lg font-bold text-purple-600">{avgMemory}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-purple-500 h-2 rounded-full transition-all"
+                    style={{ width: `${avgMemory}%` }}
+                  />
+                </div>
+              </div>
+              
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-600">平均磁碟</span>
+                  <span className="text-lg font-bold text-green-600">{avgDisk}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-green-500 h-2 rounded-full transition-all"
+                    style={{ width: `${avgDisk}%` }}
+                  />
+                </div>
               </div>
             </div>
           </div>
           
-          {selectedServer && (
-            <>
-              <hr className="my-6" />
-              <h3 className="text-lg font-bold mb-4">🖥️ 伺服器詳情</h3>
-              
-              <div className="space-y-3">
-                <div>
-                  <div className="text-sm text-gray-600">名稱</div>
-                  <div className="font-medium">{selectedServer.name}</div>
-                </div>
-                
-                <div>
-                  <div className="text-sm text-gray-600">主機</div>
-                  <div className="font-mono text-sm">{selectedServer.host}</div>
-                </div>
-                
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">CPU</div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-500 h-2 rounded-full transition-all"
-                      style={{ width: `${selectedServer.status.cpu}%` }}
-                    />
+          {/* 伺服器列表區 */}
+          <div className="p-4">
+            <h2 className="text-lg font-bold mb-4">🖥️ 伺服器列表</h2>
+            
+            <div className="space-y-2">
+              {servers.map(server => (
+                <div 
+                  key={server.id}
+                  onClick={() => setSelectedServer(server)}
+                  className={`p-3 rounded border-2 cursor-pointer transition ${
+                    selectedServer?.id === server.id
+                      ? 'bg-blue-50 border-blue-500'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-medium">{server.name}</div>
+                    <div className="text-xl">
+                      {server.status.online ? '🟢' : '⚫'}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">{selectedServer.status.cpu}%</div>
-                </div>
-                
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Memory</div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-purple-500 h-2 rounded-full transition-all"
-                      style={{ width: `${selectedServer.status.memory}%` }}
-                    />
+                  <div className="text-xs text-gray-600 font-mono mb-2">
+                    {server.host}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">{selectedServer.status.memory}%</div>
-                </div>
-                
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Disk</div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-green-500 h-2 rounded-full transition-all"
-                      style={{ width: `${selectedServer.status.disk}%` }}
-                    />
+                  {server.currentTask && (
+                    <div className="text-xs text-blue-600 font-medium">
+                      🔄 {server.currentTask}
+                    </div>
+                  )}
+                  <div className="flex gap-2 mt-2 text-xs">
+                    <div className="flex-1 bg-white rounded px-2 py-1">
+                      <span className="text-gray-500">CPU</span>
+                      <span className="ml-1 font-mono">{server.status.cpu.toFixed(0)}%</span>
+                    </div>
+                    <div className="flex-1 bg-white rounded px-2 py-1">
+                      <span className="text-gray-500">RAM</span>
+                      <span className="ml-1 font-mono">{server.status.memory.toFixed(0)}%</span>
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">{selectedServer.status.disk}%</div>
                 </div>
-                
-                <button className="w-full mt-4 px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800">
-                  SSH 連線
-                </button>
-              </div>
-            </>
-          )}
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
