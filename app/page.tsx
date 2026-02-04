@@ -22,8 +22,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-        </div>
-      </header>
       
       <div className="flex h-[calc(100vh-88px)]">
         {/* 左側：等距辦公室 Canvas (固定 70%) */}
