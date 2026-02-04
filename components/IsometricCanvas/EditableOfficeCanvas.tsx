@@ -156,14 +156,6 @@ export function EditableOfficeCanvas({
         // 建立場景
         await buildScene(pixiApp);
         setIsReady(true);
-        
-        // 通知父組件編輯器已就緒
-        if (onEditorReady && editorRef.current) {
-          onEditorReady({
-            ...editorRef.current,
-            refresh: () => refreshScene()
-          });
-        }
 
       } catch (error) {
         console.error('Pixi.js 初始化失敗:', error);
@@ -378,6 +370,16 @@ export function EditableOfficeCanvas({
       buildScene(pixiAppRef.current);
     }
   }, [buildScene]);
+
+  // 通知父組件編輯器已就緒
+  useEffect(() => {
+    if (isReady && onEditorReady && editorRef.current) {
+      onEditorReady({
+        ...editorRef.current,
+        refresh: refreshScene
+      });
+    }
+  }, [isReady, onEditorReady, refreshScene]);
 
   // 處理滑鼠移動（放置模式預覽）
   const handleCanvasMouseMove = useCallback((event: React.MouseEvent) => {
