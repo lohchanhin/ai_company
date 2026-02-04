@@ -1,13 +1,23 @@
 import { NextResponse } from 'next/server';
-import { getMonitorInstance } from '@/lib/vps-monitor';
-import { DEFAULT_VPS_CONFIG } from '@/lib/vps-monitor/types';
+import { LocalMetricsCollector } from '@/lib/vps-monitor/local-metrics';
+import { DEFAULT_VPS_CONFIG, determineStatus, VPSStatus } from '@/lib/vps-monitor/types';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const monitor = getMonitorInstance();
-    const statuses = await monitor.getMultipleStatus(DEFAULT_VPS_CONFIG);
+    const collector = new LocalMetricsCollector();
+    const metrics = await collector.getAllMetrics();
+
+    const statuses: VPSStatus[] = DEFAULT_VPS_CONFIG.map(vps => {
+      const status = determineStatus(metrics, vps.thresholds);
+      return {
+        id: vps.id,
+        status,
+        metrics,
+        lastUpdate: Date.now()
+      };
+    });
 
     return NextResponse.json({
       success: true,

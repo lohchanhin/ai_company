@@ -50,13 +50,13 @@ export interface VPSStatus {
 export const DEFAULT_VPS_CONFIG: VPSConfig[] = [
   {
     id: 'vps-1',
-    name: 'Current Server',
+    name: 'Current Server (localhost)',
     hostname: 'localhost',
     ip: '127.0.0.1',
     ssh: {
       port: 22,
       user: 'root',
-      keyPath: process.env.SSH_KEY_PATH || '~/.ssh/id_rsa'
+      password: process.env.ROOT_PASSWORD || 'password'
     },
     role: 'web',
     displayRole: 'programmer',
