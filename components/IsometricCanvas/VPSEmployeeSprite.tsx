@@ -1,7 +1,7 @@
 'use client';
 
 import * as PIXI from 'pixi.js';
-import { gridToIso } from '@/lib/isometric';
+import { toIsometric } from '@/lib/isometric';
 import { VPSStatus } from '@/lib/vps-monitor/types';
 
 export class VPSEmployeeSprite {
@@ -19,8 +19,8 @@ export class VPSEmployeeSprite {
     this.container.cursor = 'pointer';
     
     // 等距座標
-    const isoPos = gridToIso(gridX, gridY);
-    this.container.position.set(isoPos.x, isoPos.y);
+    const isoPos = toIsometric(gridX, gridY);
+    this.container.position.set(isoPos.isoX, isoPos.isoY);
     
     // 創建員工方塊（代表 VPS）
     this.graphics = new PIXI.Graphics();
