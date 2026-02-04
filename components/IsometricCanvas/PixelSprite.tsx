@@ -8,8 +8,12 @@ export class PixelSprite {
   private sprite: PIXI.Sprite | null = null;
   private gridX: number;
   private gridY: number;
+  private spritePath: string;
+  private scale: number;
+  private loaded: boolean = false;
   
   constructor(
+    type: string,
     spritePath: string,
     gridX: number,
     gridY: number,
@@ -17,38 +21,41 @@ export class PixelSprite {
   ) {
     this.gridX = gridX;
     this.gridY = gridY;
+    this.spritePath = spritePath;
+    this.scale = scale;
     this.container = new PIXI.Container();
     
     const iso = toIsometric(gridX, gridY);
     this.container.position.set(iso.isoX, iso.isoY);
-    
-    // 加載精靈圖片
-    this.loadSprite(spritePath, scale);
   }
   
-  private async loadSprite(path: string, scale: number) {
+  public async load(): Promise<void> {
+    if (this.loaded) return;
+    
     try {
-      const texture = await PIXI.Assets.load(path);
+      const texture = await PIXI.Assets.load(this.spritePath);
       this.sprite = new PIXI.Sprite(texture);
       
       // 設置錨點（底部中心）
       this.sprite.anchor.set(0.5, 1);
       
       // 縮放
-      this.sprite.scale.set(scale);
+      this.sprite.scale.set(this.scale);
       
       // 像素風格
       texture.source.scaleMode = 'nearest';
       
       this.container.addChild(this.sprite);
+      this.loaded = true;
     } catch (error) {
-      console.warn(`Failed to load sprite: ${path}`, error);
+      console.warn(`Failed to load sprite: ${this.spritePath}`, error);
       
       // 失敗時顯示佔位符
       const placeholder = new PIXI.Graphics();
       placeholder.rect(-8, -16, 16, 16);
       placeholder.fill(0xff00ff);
       this.container.addChild(placeholder);
+      this.loaded = true;
     }
   }
   

@@ -4,6 +4,7 @@ import * as PIXI from 'pixi.js';
 import { toIsometric } from '@/lib/isometric';
 
 export class FloorTileSprite {
+  public container: PIXI.Container;
   public graphics: PIXI.Graphics;
   private gridX: number;
   private gridY: number;
@@ -23,7 +24,9 @@ export class FloorTileSprite {
     };
     
     this.color = colorMap[type];
+    this.container = new PIXI.Container();
     this.graphics = new PIXI.Graphics();
+    this.container.addChild(this.graphics);
     this.draw();
   }
   
@@ -53,9 +56,18 @@ export class FloorTileSprite {
     this.graphics.stroke({ width: 1, color: 0x000000, alpha: 0.2 });
   }
   
+  // Pixi.js 8.x: 移除 load() 方法，不需要非同步載入
+  public async load() {
+    // Graphics 不需要載入，立即可用
+    return Promise.resolve();
+  }
+  
   public destroy() {
     if (this.graphics) {
       this.graphics.destroy();
+    }
+    if (this.container) {
+      this.container.destroy();
     }
   }
 }
