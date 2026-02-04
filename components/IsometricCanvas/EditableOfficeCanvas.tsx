@@ -195,12 +195,51 @@ export function EditableOfficeCanvas({
     const stage = app.stage;
     stage.removeChildren();
 
+    // 主場景容器（可拖曳）
+    const sceneContainer = new PIXI.Container();
+    stage.addChild(sceneContainer);
+    
+    // 啟用場景拖曳
+    sceneContainer.eventMode = 'static';
+    sceneContainer.cursor = 'grab';
+    
+    let isDraggingScene = false;
+    let dragStart = { x: 0, y: 0 };
+    
+    sceneContainer.on('pointerdown', (event: any) => {
+      if (mode === 'view') {
+        isDraggingScene = true;
+        sceneContainer.cursor = 'grabbing';
+        dragStart = {
+          x: event.global.x - sceneContainer.x,
+          y: event.global.y - sceneContainer.y
+        };
+      }
+    });
+    
+    sceneContainer.on('pointermove', (event: any) => {
+      if (isDraggingScene) {
+        sceneContainer.x = event.global.x - dragStart.x;
+        sceneContainer.y = event.global.y - dragStart.y;
+      }
+    });
+    
+    sceneContainer.on('pointerup', () => {
+      isDraggingScene = false;
+      sceneContainer.cursor = 'grab';
+    });
+    
+    sceneContainer.on('pointerupoutside', () => {
+      isDraggingScene = false;
+      sceneContainer.cursor = 'grab';
+    });
+
     // 圖層
     const floorLayer = new PIXI.Container();
     const objectLayer = new PIXI.Container();
 
-    stage.addChild(floorLayer);
-    stage.addChild(objectLayer);
+    sceneContainer.addChild(floorLayer);
+    sceneContainer.addChild(objectLayer);
 
     // 置中視圖
     const offsetX = app.screen.width / 2 - 200;

@@ -40,18 +40,51 @@ export class PixelSprite {
       return name;
     }
     
-    // 根據類型決定目錄
-    const typeMap: Record<string, string> = {
-      'furniture': 'furniture',
-      'object': 'objects',
-      'decoration': 'objects',
-      'character': 'characters',
-      'floor': 'floors'
+    // 根據 sprite 名稱決定目錄（優先匹配）
+    const spriteToDir: Record<string, string> = {
+      // Furniture
+      'desk': 'furniture',
+      'chair': 'furniture',
+      'meeting-table': 'furniture',
+      'bookshelf': 'furniture',
+      'file-cabinet': 'furniture',
+      'water-dispenser': 'furniture',
+      'printer': 'furniture',
+      // Objects
+      'object-monitor': 'objects',
+      'object-keyboard': 'objects',
+      'plant-small': 'objects',
+      'plant-medium': 'objects',
+      'plant-large': 'objects',
+      'whiteboard': 'objects',
+      'clock': 'objects',
+      'coffee-machine': 'objects',
+      'sofa': 'objects',
+      'game-console': 'objects',
+      'floor-lamp': 'objects',
+      'ceiling-lamp': 'objects',
+      'wall-poster': 'objects',
+      'window': 'objects',
+      'door': 'objects',
+      'box': 'objects',
+      'trash-bin': 'objects',
+      'break-room-table': 'objects',
+      'filing-cabinet': 'objects'
     };
     
-    const directory = typeMap[type] || 'objects';
+    // 優先使用名稱映射
+    const directory = spriteToDir[name] || (() => {
+      // 否則根據 type 決定
+      const typeMap: Record<string, string> = {
+        'furniture': 'furniture',
+        'object': 'objects',
+        'decoration': 'objects',
+        'character': 'characters',
+        'floor': 'floors'
+      };
+      return typeMap[type] || 'objects';
+    })();
     
-    // 不要移除前綴，直接使用原始名稱
     return `/sprites/${directory}/${name}.png`;
   }
   
