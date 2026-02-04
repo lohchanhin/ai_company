@@ -10,7 +10,6 @@ import { useVPSMonitor } from '@/hooks/useVPSMonitor';
 import { DEFAULT_VPS_CONFIG } from '@/lib/vps-monitor/types';
 import { 
   FULL_OFFICE_SCENE, 
-  CHARACTER_SPRITES, 
   FURNITURE_SPRITES, 
   OBJECT_SPRITES 
 } from '@/lib/scene-config';
@@ -87,13 +86,11 @@ export function VPSOfficeCanvas() {
       
       console.log(`📦 Loading ${FULL_OFFICE_SCENE.length} scene objects...`);
       
-      // 加載所有場景物件
+      // 加載所有場景物件（僅環境，不含員工）
       FULL_OFFICE_SCENE.forEach((obj) => {
         let spritePath = '';
         
-        if (obj.type === 'character') {
-          spritePath = CHARACTER_SPRITES[obj.sprite];
-        } else if (obj.type === 'furniture') {
+        if (obj.type === 'furniture') {
           spritePath = FURNITURE_SPRITES[obj.sprite];
         } else if (obj.type === 'object') {
           spritePath = OBJECT_SPRITES[obj.sprite];
@@ -110,7 +107,7 @@ export function VPSOfficeCanvas() {
         }
       });
       
-      console.log('✅ Scene objects loaded');
+      console.log('✅ Environment objects loaded (no employees)');
       
       // ===== VPS 員工（最上層）=====
       const employeeContainer = new PIXI.Container();
