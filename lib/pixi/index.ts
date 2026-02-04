@@ -33,6 +33,7 @@ export class PixiApp {
     if (this.container && this.app.canvas) {
       this.container.removeChild(this.app.canvas);
     }
+    // Pixi.js 8.x: destroy(options) 或 destroy(removeView)
     this.app.destroy(true);
   }
   
@@ -51,7 +52,7 @@ export function createPlaceholderSprite(
 ): PIXI.Graphics {
   const graphics = new PIXI.Graphics();
   
-  // 繪製填充
+  // Pixi.js 8.x 新 API: rect() + fill()
   graphics.rect(0, 0, width, height);
   graphics.fill(color);
   
