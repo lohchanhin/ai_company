@@ -20,6 +20,7 @@ interface EditableOfficeCanvasProps {
   onRedo?: () => void;
   onSave?: () => void;
   vpsCount?: number;
+  onEditorReady?: (editor: OfficeEditor) => void;
 }
 
 export function EditableOfficeCanvas({
@@ -29,7 +30,8 @@ export function EditableOfficeCanvas({
   onUndo,
   onRedo,
   onSave,
-  vpsCount = 8
+  vpsCount = 8,
+  onEditorReady
 }: EditableOfficeCanvasProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const pixiAppRef = useRef<PixiApp | null>(null);
@@ -54,8 +56,13 @@ export function EditableOfficeCanvas({
       
       editorRef.current = new OfficeEditor(initialObjects);
       editorRef.current.setMode(mode);
+      
+      // 通知父組件編輯器已就緒
+      if (onEditorReady) {
+        onEditorReady(editorRef.current);
+      }
     }
-  }, [vpsCount, mode]);
+  }, [vpsCount, mode, onEditorReady]);
 
   // 初始化快捷鍵
   useEffect(() => {

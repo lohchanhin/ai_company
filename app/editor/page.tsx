@@ -6,6 +6,8 @@ import { EditorToolbar } from '@/components/Editor/EditorToolbar';
 import { ObjectPanel, ObjectPanelItem } from '@/components/Editor/ObjectPanel';
 import { EditorMode } from '@/lib/editor/OfficeEditor';
 
+import { SceneStorage } from '@/lib/editor/SceneStorage';
+
 // 可用物件列表
 const availableObjects: ObjectPanelItem[] = [
   // 家具
@@ -39,6 +41,7 @@ export default function EditorPage() {
   const [mode, setMode] = useState<EditorMode>('view');
   const [selectedItem, setSelectedItem] = useState<ObjectPanelItem | null>(null);
   const [vpsCount, setVpsCount] = useState(8);
+  const [editorRef, setEditorRef] = useState<any>(null);
 
   const handleModeChange = (newMode: EditorMode) => {
     setMode(newMode);
@@ -53,18 +56,38 @@ export default function EditorPage() {
   };
 
   const handleSave = () => {
-    // TODO: 實作儲存功能
-    alert('儲存功能開發中...');
+    if (!editorRef) {
+      alert('編輯器尚未初始化');
+      return;
+    }
+    
+    const objects = editorRef.exportScene();
+    const success = SceneStorage.save('My Office', objects, vpsCount);
+    
+    if (success) {
+      alert('✅ 場景已儲存！');
+      // 同時下載 JSON
+      SceneStorage.downloadJSON(objects, vpsCount, `office-${Date.now()}.json`);
+    } else {
+      alert('❌ 儲存失敗');
+    }
   };
 
   const handleLoad = () => {
-    // TODO: 實作載入功能
-    alert('載入功能開發中...');
+    const scene = SceneStorage.load();
+    if (!scene) {
+      alert('沒有已儲存的場景');
+      return;
+    }
+    
+    if (confirm(`載入場景 "${scene.name}"？\n最後儲存：${new Date(scene.timestamp).toLocaleString()}`)) {
+      window.location.reload(); // 簡化：重新載入頁面
+    }
   };
 
   const handleClear = () => {
-    if (confirm('確定要清空所有物件嗎？')) {
-      // TODO: 實作清空功能
+    if (confirm('確定要清空所有物件嗎？此操作無法復原。')) {
+      SceneStorage.clear();
       window.location.reload();
     }
   };
@@ -172,6 +195,7 @@ export default function EditorPage() {
             onModeChange={handleModeChange}
             placingObjectType={selectedItem?.sprite || null}
             vpsCount={vpsCount}
+            onEditorReady={setEditorRef}
           />
         </div>
 
