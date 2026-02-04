@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
 import { PixiApp } from '@/lib/pixi';
 import { VPSEmployeeSprite } from './VPSEmployeeSprite';
+import { FloorTileSprite } from './FloorTileSprite';
+import { FurnitureSprite } from './FurnitureSprite';
 import { useVPSMonitor } from '@/hooks/useVPSMonitor';
 import { DEFAULT_VPS_CONFIG } from '@/lib/vps-monitor/types';
 
@@ -38,6 +40,71 @@ export function VPSOfficeCanvas() {
       app.stage.addChild(mainContainer);
       mainContainer.position.set(width / 2, 150);
       
+      // ===== 建立辦公室地板 =====
+      const floorContainer = new PIXI.Container();
+      mainContainer.addChild(floorContainer);
+      
+      // 8x8 辦公室格子
+      const officeSize = 8;
+      
+      for (let y = 0; y < officeSize; y++) {
+        for (let x = 0; x < officeSize; x++) {
+          let floorType: 'wood' | 'blue' | 'gray' | 'green' | 'red' = 'wood';
+          
+          // 分區設計
+          if (y < 3) {
+            floorType = 'blue';  // 開發區（Y=0-2）
+          } else if (y < 5) {
+            floorType = 'gray';  // 會議區（Y=3-4）
+          } else if (y < 7) {
+            floorType = 'green'; // 休息區（Y=5-6）
+          } else {
+            floorType = 'red';   // 管理區（Y=7）
+          }
+          
+          const tile = new FloorTileSprite(x, y, floorType);
+          floorContainer.addChild(tile.graphics);
+        }
+      }
+      
+      // ===== 建立辦公家具 =====
+      const furnitureContainer = new PIXI.Container();
+      mainContainer.addChild(furnitureContainer);
+      
+      // 開發區家具（6個工位）
+      const workstations = [
+        { x: 1, y: 0 }, { x: 3, y: 0 }, { x: 5, y: 0 },
+        { x: 1, y: 2 }, { x: 3, y: 2 }, { x: 5, y: 2 }
+      ];
+      
+      workstations.forEach(pos => {
+        const desk = new FurnitureSprite('desk', pos.x, pos.y);
+        const chair = new FurnitureSprite('chair', pos.x, pos.y + 0.5);
+        furnitureContainer.addChild(desk.graphics);
+        furnitureContainer.addChild(chair.graphics);
+      });
+      
+      // 休息區設施
+      const waterDispenser = new FurnitureSprite('water-dispenser', 1, 5);
+      const plant1 = new FurnitureSprite('plant', 3, 5);
+      const bookshelf = new FurnitureSprite('bookshelf', 6, 5);
+      
+      furnitureContainer.addChild(waterDispenser.graphics);
+      furnitureContainer.addChild(plant1.graphics);
+      furnitureContainer.addChild(bookshelf.graphics);
+      
+      // 管理區
+      const ceoDeskPos = { x: 3, y: 7 };
+      const ceoDesk = new FurnitureSprite('desk', ceoDeskPos.x, ceoDeskPos.y);
+      const ceoChair = new FurnitureSprite('chair', ceoDeskPos.x, ceoDeskPos.y + 0.5);
+      
+      furnitureContainer.addChild(ceoDesk.graphics);
+      furnitureContainer.addChild(ceoChair.graphics);
+      
+      // ===== VPS 員工（最上層）=====
+      const employeeContainer = new PIXI.Container();
+      mainContainer.addChild(employeeContainer);
+      
       // 創建初始 VPS 員工
       DEFAULT_VPS_CONFIG.forEach((vpsConfig) => {
         const initialStatus = {
@@ -54,7 +121,7 @@ export function VPSOfficeCanvas() {
           vpsConfig.gridY
         );
         
-        mainContainer.addChild(sprite.container);
+        employeeContainer.addChild(sprite.container);
         spritesRef.current.set(vpsConfig.id, sprite);
         
         // 點擊事件
