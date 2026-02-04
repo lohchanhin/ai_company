@@ -30,11 +30,17 @@ export class PixiApp {
   }
   
   destroy() {
+    // 檢查 app 是否存在
+    if (!this.app) return;
+    
     // Pixi.js 8.x: destroy() handles cleanup automatically
     this.app.destroy();
   }
   
   resize(width: number, height: number) {
+    // 檢查 app 和 renderer 是否存在
+    if (!this.app?.renderer) return;
+    
     this.app.renderer.resize(width, height);
   }
 }
