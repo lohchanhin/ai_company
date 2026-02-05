@@ -184,6 +184,10 @@ Isometric 座標 (isoX, isoY)
 
 ## 🛠️ 開發指南
 
+### 開發來源白名單（Next.js dev）
+
+`next.config.ts` 的 `experimental.allowedDevOrigins` 用於允許哪些來源可以存取開發伺服器。當你需要從**非本機**的 IP/網域存取 dev server（例如遠端開發機、內部跳板機、VPN、反向代理或臨時的 tunneling 服務）時，請新增對應來源；若不再使用也要移除，避免誤開放。更新後請重新啟動開發伺服器讓設定生效。
+
 ### 新增伺服器類型
 
 1. 在 `types/index.ts` 新增類型：
