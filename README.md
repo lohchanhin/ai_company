@@ -36,6 +36,13 @@ npm run dev
 
 訪問 http://localhost:3000
 
+### 啟動說明（MVP 施工版）
+1. 確認本機已安裝 Node.js 18+ 與 npm。
+2. 執行 `npm install` 安裝依賴。
+3. 執行 `npm run dev` 啟動開發伺服器。
+4. 進入 http://localhost:3000 查看畫面。
+5. 若遇到啟動失敗，先執行 `npm run lint` 檢查程式碼規範，再重試啟動。
+
 ### 建置生產版本
 ```bash
 npm run build
