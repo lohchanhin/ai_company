@@ -84,3 +84,5 @@ export interface ServerStats {
   disk: number;
   uptime: number;
 }
+
+export * from "./office";
