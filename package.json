@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:office": "node scripts/test-office-utils.mjs"
   },
   "dependencies": {
     "@types/ssh2": "^1.15.5",
