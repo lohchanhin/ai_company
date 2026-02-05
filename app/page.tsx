@@ -92,9 +92,9 @@ const MOCK_METRICS = [
 ];
 
 const METRIC_COLORS: Record<string, string> = {
-  normal: 'bg-emerald-500',
-  warn: 'bg-amber-500',
-  crit: 'bg-rose-500',
+  normal: 'bg-gradient-to-r from-emerald-400 to-emerald-600',
+  warn: 'bg-gradient-to-r from-amber-400 to-amber-600',
+  crit: 'bg-gradient-to-r from-rose-400 to-rose-600',
 };
 
 const ui = {
