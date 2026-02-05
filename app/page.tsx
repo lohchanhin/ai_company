@@ -183,7 +183,7 @@ export default function Home() {
 
       <div className={ui.layout}>
         {/* 左側：等距辦公室 Canvas (固定 70%) */}
-        <div className="w-[70%] p-6">
+        <div className="w-[66%] p-7">
           <div className={ui.canvasCard}>
             <VPSOfficeCanvas />
           </div>
@@ -220,7 +220,7 @@ export default function Home() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-2 gap-4 text-xs">
                 <select
                   className={ui.select}
                   value={filters.status}
