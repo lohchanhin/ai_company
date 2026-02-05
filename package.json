@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "clean:next-cache": "rm -rf .next/cache",
     "dev": "next dev",
+    "dev:cache-aware": "node scripts/dev-cache-aware.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

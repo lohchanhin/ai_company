@@ -71,6 +71,26 @@ const [dimensions, setDimensions] = useState({
 
 ---
 
+## 問題 6: Turbopack 反序列化/壓縮警告
+
+### 可能原因：
+- `.next/cache` 內的快取內容與目前依賴版本或設定不一致
+
+### 解決方案：
+當 Console 出現類似「Turbopack 反序列化失敗」或「壓縮/解壓縮警告」時，請先清理 Next.js 快取再重啟開發伺服器。
+
+```bash
+# 直接清除快取
+npm run clean:next-cache
+
+# 或使用可選開關啟動（不會每次都清快取）
+CLEAN_NEXT_CACHE=1 npm run dev:cache-aware
+# 或
+npm run dev:cache-aware -- --clean-cache
+```
+
+---
+
 ## 立即診斷命令
 
 ```bash
