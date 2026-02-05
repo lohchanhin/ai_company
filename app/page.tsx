@@ -2,6 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import { VPSOfficeCanvas } from '@/components/IsometricCanvas/VPSOfficeCanvas';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type TaskStatus = 'todo' | 'in_progress' | 'blocked' | 'done';
 
@@ -94,48 +98,40 @@ const METRIC_COLORS: Record<string, string> = {
 };
 
 const ui = {
-  page: 'min-h-screen bg-slate-100 text-slate-900',
-  header: 'border-b border-slate-200 bg-white',
-  headerInner: 'flex items-center gap-4 px-8 py-5',
-  h1: 'text-2xl font-semibold text-slate-900',
-  h2: 'text-lg font-semibold text-slate-900',
-  body: 'text-sm text-slate-600',
-  label: 'text-xs font-medium text-slate-500',
-  layout: 'flex h-[calc(100vh-88px)]',
-  canvasCard: 'relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm',
-  panel: 'w-[30%] border-l border-slate-200 bg-slate-50/80',
-  panelHeader: 'sticky top-0 z-10 border-b border-slate-200 bg-slate-50/95 backdrop-blur',
-  tabList: 'flex gap-6 px-4',
-  tab: 'relative px-1 pb-3 pt-3 text-sm font-medium text-slate-500 transition hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200',
-  tabActive: 'text-indigo-600 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-indigo-600',
-  section: 'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm',
-  card: 'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm',
-  cardSubtle: 'rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm',
-  badge: 'rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600',
-  badgePrimary: 'rounded-full bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-600',
-  buttonPrimary:
-    'inline-flex items-center justify-center rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200',
-  buttonSecondary:
-    'inline-flex items-center justify-center rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200',
-  buttonGhost:
-    'inline-flex items-center justify-center rounded-full border border-transparent px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200',
-  input:
-    'rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200',
-  progressTrack: 'h-2 w-full overflow-hidden rounded-full bg-slate-200',
-  progressBar: 'h-full rounded-full bg-indigo-500',
+  page: 'min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]',
+  header: 'border-b border-[hsl(var(--border))] bg-[hsl(var(--card))]',
+  headerInner:
+    'flex min-h-[104px] items-center gap-[var(--space-5)] px-[var(--space-8)] py-[var(--space-6)]',
+  h1: 'text-2xl font-semibold leading-tight text-[hsl(var(--foreground))]',
+  h2: 'text-lg font-semibold leading-snug text-[hsl(var(--foreground))]',
+  body: 'text-sm leading-relaxed text-[hsl(var(--muted-foreground))]',
+  label: 'text-xs font-medium text-[hsl(var(--muted-foreground))]',
+  layout: 'flex h-[calc(100vh-104px)]',
+  canvasCard:
+    'relative h-full overflow-hidden rounded-[var(--radius-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-sm',
+  panel: 'w-[34%] border-l border-[hsl(var(--border))] bg-[hsl(var(--muted)/0.6)]',
+  panelHeader:
+    'sticky top-0 z-10 border-b border-[hsl(var(--border))] bg-[hsl(var(--background)/0.9)] backdrop-blur',
+  badge: 'rounded-full bg-[hsl(var(--muted))] px-2 py-1 text-xs font-medium text-[hsl(var(--muted-foreground))]',
+  badgePrimary:
+    'rounded-full bg-[hsl(var(--accent))] px-2 py-1 text-xs font-medium text-[hsl(var(--accent-foreground))]',
+  select:
+    'h-9 w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 py-2 text-xs text-[hsl(var(--foreground))] shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))]',
+  progressTrack: 'h-2 w-full overflow-hidden rounded-full bg-[hsl(var(--muted))]',
+  progressBar: 'h-full rounded-full bg-[hsl(var(--primary))]',
 };
 
 const PRIORITY_BADGE: Record<string, string> = {
-  high: 'bg-rose-50 text-rose-600',
-  medium: 'bg-amber-50 text-amber-600',
-  low: 'bg-emerald-50 text-emerald-600',
+  high: 'bg-[hsl(var(--destructive)/0.12)] text-[hsl(var(--destructive))]',
+  medium: 'bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))]',
+  low: 'bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))]',
 };
 
 const STATUS_BADGE: Record<TaskStatus, string> = {
-  todo: 'bg-slate-100 text-slate-600',
-  in_progress: 'bg-indigo-50 text-indigo-600',
-  blocked: 'bg-rose-50 text-rose-600',
-  done: 'bg-emerald-50 text-emerald-600',
+  todo: 'bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]',
+  in_progress: 'bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))]',
+  blocked: 'bg-[hsl(var(--destructive)/0.12)] text-[hsl(var(--destructive))]',
+  done: 'bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))]',
 };
 
 export default function Home() {
@@ -188,7 +184,7 @@ export default function Home() {
 
       <div className={ui.layout}>
         {/* 左側：等距辦公室 Canvas (固定 70%) */}
-        <div className="w-[70%] p-6">
+        <div className="w-[66%] p-7">
           <div className={ui.canvasCard}>
             <VPSOfficeCanvas />
           </div>
@@ -196,28 +192,27 @@ export default function Home() {
         
         {/* 右側：任務 / 人員 / 資源 / 佈局面板 */}
         <div className={`${ui.panel} overflow-y-auto`}>
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as typeof activeTab)}
+          className="flex h-full flex-col"
+        >
           <div className={ui.panelHeader}>
-            <div className={ui.tabList}>
+            <TabsList className="mx-6 my-4 min-h-[48px] gap-3">
               {[
                 { id: 'tasks', label: 'Tasks' },
                 { id: 'people', label: 'People' },
                 { id: 'resources', label: 'Resources' },
                 { id: 'layout', label: 'Layout' },
               ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                  className={`${ui.tab} ${activeTab === tab.id ? ui.tabActive : ''}`}
-                >
+                <TabsTrigger key={tab.id} value={tab.id} className="min-w-[88px]">
                   {tab.label}
-                </button>
+                </TabsTrigger>
               ))}
-            </div>
+            </TabsList>
           </div>
 
-          {activeTab === 'tasks' && (
-            <div className="p-4 space-y-4">
+          <TabsContent value="tasks" className="px-7 py-6 space-y-7">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📋</span>
                 <h2 className={ui.h2}>任務清單</h2>
@@ -226,9 +221,9 @@ export default function Home() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-2 gap-4 text-xs">
                 <select
-                  className={ui.input}
+                  className={ui.select}
                   value={filters.status}
                   onChange={(event) => setFilters((prev) => ({ ...prev, status: event.target.value }))}
                 >
@@ -239,7 +234,7 @@ export default function Home() {
                   <option value="done">完成</option>
                 </select>
                 <select
-                  className={ui.input}
+                  className={ui.select}
                   value={filters.priority}
                   onChange={(event) => setFilters((prev) => ({ ...prev, priority: event.target.value }))}
                 >
@@ -248,20 +243,18 @@ export default function Home() {
                   <option value="medium">中</option>
                   <option value="low">低</option>
                 </select>
-                <input
-                  className={ui.input}
+                <Input
                   placeholder="指派者"
                   value={filters.assignee}
                   onChange={(event) => setFilters((prev) => ({ ...prev, assignee: event.target.value }))}
                 />
-                <input
-                  className={ui.input}
+                <Input
                   placeholder="主管"
                   value={filters.manager}
                   onChange={(event) => setFilters((prev) => ({ ...prev, manager: event.target.value }))}
                 />
-                <input
-                  className={`col-span-2 ${ui.input}`}
+                <Input
+                  className="col-span-2"
                   placeholder="關鍵字"
                   value={filters.keyword}
                   onChange={(event) => setFilters((prev) => ({ ...prev, keyword: event.target.value }))}
@@ -269,168 +262,177 @@ export default function Home() {
               </div>
 
               {(['todo', 'in_progress', 'blocked', 'done'] as TaskStatus[]).map((status) => (
-                <div key={status} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-slate-700">{STATUS_LABELS[status]}</h3>
+                <div key={status} className="space-y-4">
+                  <div className="flex items-center justify-between pb-1">
+                    <h3 className="text-sm font-semibold text-[hsl(var(--foreground))]">{STATUS_LABELS[status]}</h3>
                     <span className={ui.label}>{groupedTasks[status].length} 項</span>
                   </div>
                   {groupedTasks[status].map((task) => (
-                    <div key={task.id} className={ui.card}>
-                      <div className="flex items-center justify-between">
-                        <div className="text-sm font-semibold text-slate-800">{task.title}</div>
-                        <span className={ui.label}>{task.updatedAt}</span>
-                      </div>
-                      <div className="mt-2 flex items-center gap-2 text-xs text-gray-600">
-                        <span className={ui.badge}>{task.assignee}</span>
-                        <span className={ui.badge}>{task.manager}</span>
-                        <span className={`rounded-full px-2 py-1 text-xs font-medium ${PRIORITY_BADGE[task.priority]}`}>
-                          {task.priority}
-                        </span>
-                        <span className={`rounded-full px-2 py-1 text-xs font-medium ${STATUS_BADGE[task.status]}`}>
-                          {STATUS_LABELS[task.status]}
-                        </span>
-                      </div>
-                      <div className={`mt-3 ${ui.progressTrack}`}>
-                        <div className={ui.progressBar} style={{ width: `${task.progress}%` }} />
-                      </div>
-                      {task.status === 'blocked' && task.blockedReason && (
-                        <div className="mt-2 text-xs text-rose-600">原因：{task.blockedReason}</div>
-                      )}
-                    </div>
+                    <Card key={task.id}>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm font-semibold leading-snug text-[hsl(var(--foreground))]">
+                            {task.title}
+                          </div>
+                          <span className={ui.label}>{task.updatedAt}</span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-[hsl(var(--muted-foreground))]">
+                          <span className={ui.badge}>{task.assignee}</span>
+                          <span className={ui.badge}>{task.manager}</span>
+                          <span className={`rounded-full px-2 py-1 text-xs font-medium ${PRIORITY_BADGE[task.priority]}`}>
+                            {task.priority}
+                          </span>
+                          <span className={`rounded-full px-2 py-1 text-xs font-medium ${STATUS_BADGE[task.status]}`}>
+                            {STATUS_LABELS[task.status]}
+                          </span>
+                        </div>
+                        <div className={ui.progressTrack}>
+                          <div className={ui.progressBar} style={{ width: `${task.progress}%` }} />
+                        </div>
+                        {task.status === 'blocked' && task.blockedReason && (
+                          <div className="text-xs leading-relaxed text-[hsl(var(--destructive))]">
+                            原因：{task.blockedReason}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
               ))}
-            </div>
-          )}
+          </TabsContent>
 
-          {activeTab === 'people' && (
-            <div className="p-4 space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🧑‍💻</span>
-                <h2 className={ui.h2}>人員列表</h2>
-                <button type="button" className={`ml-auto ${ui.buttonPrimary}`}>
-                  新增員工
-                </button>
-              </div>
-              <div className="space-y-3">
-                {MOCK_PEOPLE.map((person) => (
-                  <div key={person.id} className={ui.card}>
+          <TabsContent value="people" className="px-7 py-6 space-y-7">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🧑‍💻</span>
+              <h2 className={ui.h2}>人員列表</h2>
+              <Button size="sm" className="ml-auto">
+                新增員工
+              </Button>
+            </div>
+            <div className="space-y-5">
+              {MOCK_PEOPLE.map((person) => (
+                <Card key={person.id}>
+                  <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="text-sm font-semibold text-slate-800">{person.name}</div>
+                      <div className="text-sm font-semibold text-[hsl(var(--foreground))]">{person.name}</div>
                       <span className={ui.label}>{person.status}</span>
                     </div>
-                    <div className="mt-2 text-xs text-slate-600">角色：{person.role}</div>
-                    <div className="mt-1 text-xs text-slate-600">主管：{person.manager}</div>
-                    <div className="mt-1 text-xs text-slate-500">Node：{person.nodeRef}</div>
-                    <div className="mt-3 flex gap-2 text-xs">
-                      <button type="button" className={ui.buttonSecondary}>
-                        綁定座位
-                      </button>
-                      <button
-                        type="button"
-                        className="inline-flex items-center justify-center rounded-full border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200"
-                      >
-                        移除
-                      </button>
+                    <div className="text-xs leading-relaxed text-[hsl(var(--muted-foreground))]">
+                      角色：{person.role}
                     </div>
-                  </div>
-                ))}
-              </div>
+                    <div className="text-xs leading-relaxed text-[hsl(var(--muted-foreground))]">
+                      主管：{person.manager}
+                    </div>
+                    <div className="text-xs leading-relaxed text-[hsl(var(--muted-foreground))]">
+                      Node：{person.nodeRef}
+                    </div>
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      <Button variant="secondary" size="sm">
+                        綁定座位
+                      </Button>
+                      <Button variant="destructive" size="sm">
+                        移除
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          )}
+          </TabsContent>
 
-          {activeTab === 'resources' && (
-            <div className="p-4 space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">📊</span>
-                <h2 className={ui.h2}>資源監控</h2>
-              </div>
-              <div className={ui.section}>
-                <div className="text-sm font-semibold text-slate-700">VM 規格</div>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
-                  <div>vCPU：{MOCK_VM_SPEC.vCPU}</div>
-                  <div>RAM：{MOCK_VM_SPEC.ramGB}GB</div>
-                  <div>Disk：{MOCK_VM_SPEC.diskGB}GB</div>
-                  <div>Net：{MOCK_VM_SPEC.netMbps}Mbps</div>
-                </div>
-              </div>
-              <div className="space-y-3">
-                {MOCK_METRICS.map((metric) => (
-                  <div key={metric.label} className={ui.cardSubtle}>
-                    <div className="flex items-center justify-between text-sm font-semibold text-slate-700">
+          <TabsContent value="resources" className="px-7 py-6 space-y-7">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">📊</span>
+              <h2 className={ui.h2}>資源監控</h2>
+            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>VM 規格</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-4 pt-0 text-xs text-[hsl(var(--muted-foreground))]">
+                <div>vCPU：{MOCK_VM_SPEC.vCPU}</div>
+                <div>RAM：{MOCK_VM_SPEC.ramGB}GB</div>
+                <div>Disk：{MOCK_VM_SPEC.diskGB}GB</div>
+                <div>Net：{MOCK_VM_SPEC.netMbps}Mbps</div>
+              </CardContent>
+            </Card>
+            <div className="space-y-5">
+              {MOCK_METRICS.map((metric) => (
+                <Card key={metric.label} className="bg-[hsl(var(--muted)/0.6)]">
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between text-sm font-semibold text-[hsl(var(--foreground))]">
                       <span>{metric.label}</span>
                       <span>{metric.value}%</span>
                     </div>
-                    <div className={`mt-2 ${ui.progressTrack}`}>
+                    <div className={ui.progressTrack}>
                       <div className={`h-full rounded-full ${METRIC_COLORS[metric.status]}`} style={{ width: `${metric.value}%` }} />
                     </div>
-                    <div className="mt-2 flex gap-2 text-[10px] text-slate-400">
+                    <div className="flex flex-wrap gap-2 text-[10px] text-[hsl(var(--muted-foreground))]">
                       {['10s', '20s', '30s', '40s', '50s', '60s'].map((label) => (
-                        <span key={label} className="rounded-full bg-slate-100 px-2 py-0.5">
+                        <span key={label} className="rounded-full bg-[hsl(var(--background))] px-2 py-0.5">
                           {label}
                         </span>
                       ))}
                     </div>
-                  </div>
-                ))}
-              </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          )}
+          </TabsContent>
 
-          {activeTab === 'layout' && (
-            <div className="p-4 space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🧩</span>
-                <h2 className={ui.h2}>佈局工具</h2>
-              </div>
-              <div className={ui.section}>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-slate-700">編輯模式</span>
-                  <button type="button" className={ui.buttonPrimary}>
-                    開啟
-                  </button>
-                </div>
-                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                  <button type="button" className={ui.buttonSecondary}>
-                    旋轉
-                  </button>
-                  <button type="button" className={ui.buttonSecondary}>
-                    刪除
-                  </button>
-                  <button type="button" className={ui.buttonSecondary}>
-                    置頂
-                  </button>
-                  <button type="button" className={ui.buttonSecondary}>
-                    置底
-                  </button>
-                </div>
-              </div>
-              <div className={ui.section}>
-                <div className="text-sm font-semibold text-slate-700">Catalog</div>
-                <div className="mt-2 flex flex-wrap gap-2 text-xs text-slate-600">
-                  {['desk', 'chair', 'meeting', 'rest', 'admin', 'deco'].map((item) => (
-                    <span key={item} className={ui.badge}>
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <button type="button" className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200">
-                  Save
-                </button>
-                <button type="button" className="rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200">
-                  Load
-                </button>
-                <button type="button" className="rounded-lg bg-rose-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-rose-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200">
-                  Clear
-                </button>
-                <button type="button" className="rounded-lg bg-slate-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200">
-                  Export JSON
-                </button>
-              </div>
+          <TabsContent value="layout" className="px-7 py-6 space-y-7">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🧩</span>
+              <h2 className={ui.h2}>佈局工具</h2>
             </div>
-          )}
+            <Card>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-[hsl(var(--foreground))]">編輯模式</span>
+                  <Button size="sm">開啟</Button>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <Button variant="secondary" size="sm">
+                    旋轉
+                  </Button>
+                  <Button variant="secondary" size="sm">
+                    刪除
+                  </Button>
+                  <Button variant="secondary" size="sm">
+                    置頂
+                  </Button>
+                  <Button variant="secondary" size="sm">
+                    置底
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Catalog</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-3 pt-0 text-xs text-[hsl(var(--muted-foreground))]">
+                {['desk', 'chair', 'meeting', 'rest', 'admin', 'deco'].map((item) => (
+                  <span key={item} className={ui.badge}>
+                    {item}
+                  </span>
+                ))}
+              </CardContent>
+            </Card>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <Button size="sm">Save</Button>
+              <Button size="sm" variant="secondary">
+                Load
+              </Button>
+              <Button size="sm" variant="destructive">
+                Clear
+              </Button>
+              <Button size="sm" variant="outline">
+                Export JSON
+              </Button>
+            </div>
+          </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
