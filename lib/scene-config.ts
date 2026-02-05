@@ -121,45 +121,45 @@ export const FULL_OFFICE_SCENE: SceneObject[] = [
 
 // 家具精靈路徑映射
 export const FURNITURE_SPRITES: Record<string, string> = {
-  'desk': 'sprites/furniture/desk.png',
-  'chair': 'sprites/furniture/chair.png',
-  'meeting-table': 'sprites/furniture/meeting-table.png',
-  'file-cabinet': 'sprites/furniture/file-cabinet.png',
-  'bookshelf': 'sprites/furniture/bookshelf.png',
-  'water-dispenser': 'sprites/furniture/water-dispenser.png',
-  'printer': 'sprites/furniture/printer.png',
+  'desk': '/sprites/furniture/desk.png',
+  'chair': '/sprites/furniture/chair.png',
+  'meeting-table': '/sprites/furniture/meeting-table.png',
+  'file-cabinet': '/sprites/furniture/file-cabinet.png',
+  'bookshelf': '/sprites/furniture/bookshelf.png',
+  'water-dispenser': '/sprites/furniture/water-dispenser.png',
+  'printer': '/sprites/furniture/printer.png',
 };
 
 // 物件精靈路徑映射
 export const OBJECT_SPRITES: Record<string, string> = {
-  'plant-small': 'sprites/objects/plant-small.png',
-  'plant-medium': 'sprites/objects/plant-medium.png',
-  'plant-large': 'sprites/objects/plant-large.png',
-  'sofa': 'sprites/objects/sofa.png',
-  'ceiling-lamp': 'sprites/objects/ceiling-lamp.png',
-  'window': 'sprites/objects/window.png',
-  'object-keyboard': 'sprites/objects/object-keyboard.png',
-  'object-monitor': 'sprites/objects/object-monitor.png',
-  'clock': 'sprites/objects/clock.png',
-  'coffee-machine': 'sprites/objects/coffee-machine.png',
-  'door': 'sprites/objects/door.png',
-  'filing-cabinet': 'sprites/objects/filing-cabinet.png',
-  'floor-lamp': 'sprites/objects/floor-lamp.png',
-  'game-console': 'sprites/objects/game-console.png',
-  'box': 'sprites/objects/box.png',
-  'break-room-table': 'sprites/objects/break-room-table.png',
-  'trash-bin': 'sprites/objects/trash-bin.png',
-  'wall-poster': 'sprites/objects/wall-poster.png',
-  'whiteboard': 'sprites/objects/whiteboard.png',
+  'plant-small': '/sprites/objects/plant-small.png',
+  'plant-medium': '/sprites/objects/plant-medium.png',
+  'plant-large': '/sprites/objects/plant-large.png',
+  'sofa': '/sprites/objects/sofa.png',
+  'ceiling-lamp': '/sprites/objects/ceiling-lamp.png',
+  'window': '/sprites/objects/window.png',
+  'object-keyboard': '/sprites/objects/object-keyboard.png',
+  'object-monitor': '/sprites/objects/object-monitor.png',
+  'clock': '/sprites/objects/clock.png',
+  'coffee-machine': '/sprites/objects/coffee-machine.png',
+  'door': '/sprites/objects/door.png',
+  'filing-cabinet': '/sprites/objects/filing-cabinet.png',
+  'floor-lamp': '/sprites/objects/floor-lamp.png',
+  'game-console': '/sprites/objects/game-console.png',
+  'box': '/sprites/objects/box.png',
+  'break-room-table': '/sprites/objects/break-room-table.png',
+  'trash-bin': '/sprites/objects/trash-bin.png',
+  'wall-poster': '/sprites/objects/wall-poster.png',
+  'whiteboard': '/sprites/objects/whiteboard.png',
 };
 
 // 地板精靈路徑映射
 export const FLOOR_SPRITES: Record<string, string> = {
-  'wood-floor': 'sprites/floors/wood-floor.png',
-  'blue-carpet': 'sprites/floors/blue-carpet.png',
-  'gray-carpet': 'sprites/floors/gray-carpet.png',
-  'green-carpet': 'sprites/floors/green-carpet.png',
-  'red-carpet': 'sprites/floors/red-carpet.png',
+  'wood-floor': '/sprites/floors/wood-floor.png',
+  'blue-carpet': '/sprites/floors/blue-carpet.png',
+  'gray-carpet': '/sprites/floors/gray-carpet.png',
+  'green-carpet': '/sprites/floors/green-carpet.png',
+  'red-carpet': '/sprites/floors/red-carpet.png',
 };
 
 /**
