@@ -11,6 +11,7 @@ export class PixelSprite {
   private spritePath: string;
   private scale: number;
   private loaded: boolean = false;
+  private loadError: unknown | null = null;
   
   constructor(
     type: string,
@@ -88,8 +89,10 @@ export class PixelSprite {
     return `/sprites/${directory}/${name}.png`;
   }
   
-  public async load(): Promise<void> {
-    if (this.loaded) return;
+  public async load(): Promise<{ success: boolean; error?: unknown }> {
+    if (this.loaded) {
+      return this.loadError ? { success: false, error: this.loadError } : { success: true };
+    }
     
     try {
       console.log(`Loading sprite: ${this.spritePath}`);
@@ -107,9 +110,12 @@ export class PixelSprite {
       
       this.container.addChild(this.sprite);
       this.loaded = true;
+      this.loadError = null;
       console.log(`✅ Loaded: ${this.spritePath}`);
+      return { success: true };
     } catch (error) {
       console.warn(`❌ Failed to load sprite: ${this.spritePath}`, error);
+      this.loadError = error;
       
       // 失敗時顯示佔位符
       const placeholder = new PIXI.Graphics();
@@ -117,6 +123,7 @@ export class PixelSprite {
       placeholder.fill(0xff00ff);
       this.container.addChild(placeholder);
       this.loaded = true;
+      return { success: false, error };
     }
   }
   
