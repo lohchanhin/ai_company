@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as PIXI from 'pixi.js';
 import { PixiApp } from '@/lib/pixi';
 import { VPSEmployeeSprite } from './VPSEmployeeSprite';
@@ -18,23 +18,44 @@ export function VPSOfficeCanvas() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const pixiAppRef = useRef<PixiApp | null>(null);
   const spritesRef = useRef<Map<string, VPSEmployeeSprite>>(new Map());
+  const [pixiError, setPixiError] = useState<string | null>(null);
+  const [assetErrors, setAssetErrors] = useState<string[]>([]);
+  const [sceneLoaded, setSceneLoaded] = useState(false);
   
   // 實時監控數據（每 5 秒更新）
   const { statuses, loading, error } = useVPSMonitor({ pollInterval: 5000 });
+
+  const smokeTestSpritePath = useMemo(() => OBJECT_SPRITES['plant-small'], []);
   
   useEffect(() => {
-    if (!canvasRef.current) return;
-    
+    if (!canvasRef.current) {
+      console.warn('Canvas 尚未掛載，無法初始化 Pixi');
+      setPixiError('Canvas 尚未掛載，請稍後再試');
+      return;
+    }
+
     let isCleanedUp = false;
+    setSceneLoaded(false);
+    setPixiError(null);
+    setAssetErrors([]);
     
     // 初始化 Pixi
-    const pixiApp = new PixiApp();
-    pixiAppRef.current = pixiApp;
-    
     const width = canvasRef.current.clientWidth || 800;
     const height = canvasRef.current.clientHeight || 600;
+    const pixiApp = new PixiApp({ width, height, backgroundColor: 0xE8E8E8 });
+    pixiAppRef.current = pixiApp;
     
-    pixiApp.init(canvasRef.current, width, height).then((app) => {
+    pixiApp.init().then((app) => {
+      const pixiAppInstance = pixiApp.getApp();
+      if (!pixiAppInstance || !pixiAppInstance.canvas) {
+        setPixiError('Pixi Canvas 建立失敗');
+        return;
+      }
+
+      if (canvasRef.current && !canvasRef.current.contains(pixiAppInstance.canvas)) {
+        canvasRef.current.appendChild(pixiAppInstance.canvas as HTMLCanvasElement);
+      }
+
       console.log('✅ Pixi initialized:', { width, height, stage: app.stage });
       
       if (isCleanedUp) {
@@ -49,6 +70,13 @@ export function VPSOfficeCanvas() {
       
       console.log('📦 Main container created at:', mainContainer.position);
       
+      // 簡易 smoke test：確保 Pixi 可繪製
+      const smokeTest = new PIXI.Graphics();
+      smokeTest.rect(-6, -6, 12, 12);
+      smokeTest.fill(0xffcc00);
+      smokeTest.position.set(-width / 2 + 20, -120);
+      mainContainer.addChild(smokeTest);
+
       // ===== 建立辦公室地板 =====
       const floorContainer = new PIXI.Container();
       mainContainer.addChild(floorContainer);
@@ -83,31 +111,70 @@ export function VPSOfficeCanvas() {
       // ===== 建立完整辦公室場景 =====
       const sceneContainer = new PIXI.Container();
       mainContainer.addChild(sceneContainer);
-      
-      console.log(`📦 Loading ${FULL_OFFICE_SCENE.length} scene objects...`);
-      
-      // 加載所有場景物件（僅環境，不含員工）
-      FULL_OFFICE_SCENE.forEach((obj) => {
-        let spritePath = '';
-        
-        if (obj.type === 'furniture') {
-          spritePath = FURNITURE_SPRITES[obj.sprite];
-        } else if (obj.type === 'object') {
-          spritePath = OBJECT_SPRITES[obj.sprite];
-        }
-        
-        if (spritePath) {
+
+      const loadSceneObjects = async () => {
+        const nextErrors: string[] = [];
+        let loadedCount = 0;
+
+        console.log(`📦 Loading ${FULL_OFFICE_SCENE.length} scene objects...`);
+
+        for (const obj of FULL_OFFICE_SCENE) {
+          let spritePath = '';
+
+          if (obj.type === 'furniture') {
+            spritePath = FURNITURE_SPRITES[obj.sprite] || '';
+          } else if (obj.type === 'object') {
+            spritePath = OBJECT_SPRITES[obj.sprite] || '';
+          }
+
+          if (!spritePath) {
+            nextErrors.push(`缺少精靈路徑：${obj.type}/${obj.sprite}`);
+            continue;
+          }
+
           const pixelSprite = new PixelSprite(
+            obj.type,
             spritePath,
             obj.gridX,
             obj.gridY,
             obj.scale || 1
           );
+          const result = await pixelSprite.load();
           sceneContainer.addChild(pixelSprite.container);
+
+          if (!result.success) {
+            nextErrors.push(`載入失敗：${spritePath}`);
+          } else {
+            loadedCount += 1;
+          }
         }
-      });
-      
-      console.log('✅ Environment objects loaded (no employees)');
+
+        // Smoke test sprite（單一 sprite）
+        if (smokeTestSpritePath) {
+          const smokeSprite = new PixelSprite('object', smokeTestSpritePath, 0, 0, 0.6);
+          const smokeResult = await smokeSprite.load();
+          sceneContainer.addChild(smokeSprite.container);
+          if (!smokeResult.success) {
+            nextErrors.push(`Smoke test 載入失敗：${smokeTestSpritePath}`);
+          }
+        } else {
+          nextErrors.push('Smoke test 路徑不存在：plant-small');
+        }
+
+        if (isCleanedUp) {
+          return;
+        }
+
+        if (nextErrors.length > 0) {
+          console.warn('⚠️ Scene load errors:', nextErrors);
+          setAssetErrors(nextErrors);
+        }
+
+        console.log(`✅ Environment objects loaded: ${loadedCount}`);
+        setSceneLoaded(true);
+      };
+
+      loadSceneObjects();
       
       // ===== VPS 員工（最上層）=====
       const employeeContainer = new PIXI.Container();
@@ -151,6 +218,7 @@ export function VPSOfficeCanvas() {
       });
     }).catch((err) => {
       console.error('❌ Pixi initialization failed:', err);
+      setPixiError(`Pixi 初始化失敗：${String(err)}`);
     });
     
     return () => {
@@ -190,13 +258,31 @@ export function VPSOfficeCanvas() {
   return (
     <div 
       ref={canvasRef} 
-      className="w-full h-full bg-gray-100"
+      className="relative w-full h-full bg-gray-100"
       style={{ minHeight: '600px' }}
     >
       {/* Pixi canvas 會被注入這裡 */}
       {loading && statuses.length === 0 && (
         <div className="absolute top-4 right-4 text-sm text-gray-500">
           正在載入 VPS 數據...
+        </div>
+      )}
+      {(pixiError || assetErrors.length > 0) && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90 text-sm text-red-600">
+          <div className="max-w-md space-y-2 rounded border border-red-200 bg-white p-4 shadow">
+            <div className="font-semibold">載入失敗</div>
+            {pixiError && <div>Pixi：{pixiError}</div>}
+            {assetErrors.length > 0 && (
+              <ul className="list-disc space-y-1 pl-4">
+                {assetErrors.map((errMsg) => (
+                  <li key={errMsg}>{errMsg}</li>
+                ))}
+              </ul>
+            )}
+            {!sceneLoaded && (
+              <div className="text-gray-500">正在重試或等待資源載入...</div>
+            )}
+          </div>
         </div>
       )}
     </div>

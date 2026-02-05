@@ -59,7 +59,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
         data-state={isActive ? 'active' : 'inactive'}
         onClick={() => context.onValueChange?.(value)}
         className={cn(
-          'inline-flex h-9 items-center justify-center rounded-[var(--radius-md)] px-4 text-xs font-semibold text-[hsl(var(--muted-foreground))] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))] data-[state=active]:bg-[hsl(var(--background))] data-[state=active]:text-[hsl(var(--foreground))] data-[state=active]:shadow-sm',
+          'inline-flex h-8 items-center justify-center rounded-[var(--radius-md)] px-3 text-xs font-semibold text-[hsl(var(--muted-foreground))] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))] data-[state=active]:bg-[hsl(var(--background))] data-[state=active]:text-[hsl(var(--foreground))] data-[state=active]:shadow-sm',
           className
         )}
         {...props}

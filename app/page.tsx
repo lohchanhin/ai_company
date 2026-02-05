@@ -100,16 +100,15 @@ const METRIC_COLORS: Record<string, string> = {
 const ui = {
   page: 'min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]',
   header: 'border-b border-[hsl(var(--border))] bg-[hsl(var(--card))]',
-  headerInner:
-    'flex min-h-[104px] items-center gap-[var(--space-5)] px-[var(--space-8)] py-[var(--space-6)]',
-  h1: 'text-2xl font-semibold leading-tight text-[hsl(var(--foreground))]',
-  h2: 'text-lg font-semibold leading-snug text-[hsl(var(--foreground))]',
-  body: 'text-sm leading-relaxed text-[hsl(var(--muted-foreground))]',
+  headerInner: 'flex items-center gap-[var(--space-4)] px-[var(--space-8)] py-[var(--space-5)]',
+  h1: 'text-2xl font-semibold text-[hsl(var(--foreground))]',
+  h2: 'text-lg font-semibold text-[hsl(var(--foreground))]',
+  body: 'text-sm text-[hsl(var(--muted-foreground))]',
   label: 'text-xs font-medium text-[hsl(var(--muted-foreground))]',
-  layout: 'flex h-[calc(100vh-104px)]',
+  layout: 'flex h-[calc(100vh-88px)]',
   canvasCard:
     'relative h-full overflow-hidden rounded-[var(--radius-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-sm',
-  panel: 'w-[34%] border-l border-[hsl(var(--border))] bg-[hsl(var(--muted)/0.6)]',
+  panel: 'w-[30%] border-l border-[hsl(var(--border))] bg-[hsl(var(--muted)/0.6)]',
   panelHeader:
     'sticky top-0 z-10 border-b border-[hsl(var(--border))] bg-[hsl(var(--background)/0.9)] backdrop-blur',
   badge: 'rounded-full bg-[hsl(var(--muted))] px-2 py-1 text-xs font-medium text-[hsl(var(--muted-foreground))]',
@@ -198,7 +197,7 @@ export default function Home() {
           className="flex h-full flex-col"
         >
           <div className={ui.panelHeader}>
-            <TabsList className="mx-6 my-4 min-h-[48px] gap-3">
+            <TabsList className="mx-4 my-3">
               {[
                 { id: 'tasks', label: 'Tasks' },
                 { id: 'people', label: 'People' },
@@ -212,7 +211,7 @@ export default function Home() {
             </TabsList>
           </div>
 
-          <TabsContent value="tasks" className="px-7 py-6 space-y-7">
+          <TabsContent value="tasks" className="p-4 space-y-4">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📋</span>
                 <h2 className={ui.h2}>任務清單</h2>
@@ -262,21 +261,19 @@ export default function Home() {
               </div>
 
               {(['todo', 'in_progress', 'blocked', 'done'] as TaskStatus[]).map((status) => (
-                <div key={status} className="space-y-4">
-                  <div className="flex items-center justify-between pb-1">
+                <div key={status} className="space-y-2">
+                  <div className="flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-[hsl(var(--foreground))]">{STATUS_LABELS[status]}</h3>
                     <span className={ui.label}>{groupedTasks[status].length} 項</span>
                   </div>
                   {groupedTasks[status].map((task) => (
                     <Card key={task.id}>
-                      <CardContent className="space-y-4">
+                      <CardContent className="space-y-3 pt-4">
                         <div className="flex items-center justify-between">
-                          <div className="text-sm font-semibold leading-snug text-[hsl(var(--foreground))]">
-                            {task.title}
-                          </div>
+                          <div className="text-sm font-semibold text-[hsl(var(--foreground))]">{task.title}</div>
                           <span className={ui.label}>{task.updatedAt}</span>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-[hsl(var(--muted-foreground))]">
+                        <div className="flex items-center gap-2 text-xs text-[hsl(var(--muted-foreground))]">
                           <span className={ui.badge}>{task.assignee}</span>
                           <span className={ui.badge}>{task.manager}</span>
                           <span className={`rounded-full px-2 py-1 text-xs font-medium ${PRIORITY_BADGE[task.priority]}`}>
@@ -290,9 +287,7 @@ export default function Home() {
                           <div className={ui.progressBar} style={{ width: `${task.progress}%` }} />
                         </div>
                         {task.status === 'blocked' && task.blockedReason && (
-                          <div className="text-xs leading-relaxed text-[hsl(var(--destructive))]">
-                            原因：{task.blockedReason}
-                          </div>
+                          <div className="text-xs text-[hsl(var(--destructive))]">原因：{task.blockedReason}</div>
                         )}
                       </CardContent>
                     </Card>
@@ -301,7 +296,7 @@ export default function Home() {
               ))}
           </TabsContent>
 
-          <TabsContent value="people" className="px-7 py-6 space-y-7">
+          <TabsContent value="people" className="p-4 space-y-4">
             <div className="flex items-center gap-3">
               <span className="text-2xl">🧑‍💻</span>
               <h2 className={ui.h2}>人員列表</h2>
@@ -309,24 +304,18 @@ export default function Home() {
                 新增員工
               </Button>
             </div>
-            <div className="space-y-5">
+            <div className="space-y-3">
               {MOCK_PEOPLE.map((person) => (
                 <Card key={person.id}>
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-2 pt-4">
                     <div className="flex items-center justify-between">
                       <div className="text-sm font-semibold text-[hsl(var(--foreground))]">{person.name}</div>
                       <span className={ui.label}>{person.status}</span>
                     </div>
-                    <div className="text-xs leading-relaxed text-[hsl(var(--muted-foreground))]">
-                      角色：{person.role}
-                    </div>
-                    <div className="text-xs leading-relaxed text-[hsl(var(--muted-foreground))]">
-                      主管：{person.manager}
-                    </div>
-                    <div className="text-xs leading-relaxed text-[hsl(var(--muted-foreground))]">
-                      Node：{person.nodeRef}
-                    </div>
-                    <div className="flex flex-wrap gap-2 text-xs">
+                    <div className="text-xs text-[hsl(var(--muted-foreground))]">角色：{person.role}</div>
+                    <div className="text-xs text-[hsl(var(--muted-foreground))]">主管：{person.manager}</div>
+                    <div className="text-xs text-[hsl(var(--muted-foreground))]">Node：{person.nodeRef}</div>
+                    <div className="flex gap-2 text-xs">
                       <Button variant="secondary" size="sm">
                         綁定座位
                       </Button>
@@ -340,7 +329,7 @@ export default function Home() {
             </div>
           </TabsContent>
 
-          <TabsContent value="resources" className="px-7 py-6 space-y-7">
+          <TabsContent value="resources" className="p-4 space-y-4">
             <div className="flex items-center gap-3">
               <span className="text-2xl">📊</span>
               <h2 className={ui.h2}>資源監控</h2>
@@ -349,17 +338,17 @@ export default function Home() {
               <CardHeader>
                 <CardTitle>VM 規格</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4 pt-0 text-xs text-[hsl(var(--muted-foreground))]">
+              <CardContent className="grid grid-cols-2 gap-2 text-xs text-[hsl(var(--muted-foreground))]">
                 <div>vCPU：{MOCK_VM_SPEC.vCPU}</div>
                 <div>RAM：{MOCK_VM_SPEC.ramGB}GB</div>
                 <div>Disk：{MOCK_VM_SPEC.diskGB}GB</div>
                 <div>Net：{MOCK_VM_SPEC.netMbps}Mbps</div>
               </CardContent>
             </Card>
-            <div className="space-y-5">
+            <div className="space-y-3">
               {MOCK_METRICS.map((metric) => (
                 <Card key={metric.label} className="bg-[hsl(var(--muted)/0.6)]">
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-2 pt-4">
                     <div className="flex items-center justify-between text-sm font-semibold text-[hsl(var(--foreground))]">
                       <span>{metric.label}</span>
                       <span>{metric.value}%</span>
@@ -367,7 +356,7 @@ export default function Home() {
                     <div className={ui.progressTrack}>
                       <div className={`h-full rounded-full ${METRIC_COLORS[metric.status]}`} style={{ width: `${metric.value}%` }} />
                     </div>
-                    <div className="flex flex-wrap gap-2 text-[10px] text-[hsl(var(--muted-foreground))]">
+                    <div className="flex gap-2 text-[10px] text-[hsl(var(--muted-foreground))]">
                       {['10s', '20s', '30s', '40s', '50s', '60s'].map((label) => (
                         <span key={label} className="rounded-full bg-[hsl(var(--background))] px-2 py-0.5">
                           {label}
@@ -380,18 +369,18 @@ export default function Home() {
             </div>
           </TabsContent>
 
-          <TabsContent value="layout" className="px-7 py-6 space-y-7">
+          <TabsContent value="layout" className="p-4 space-y-4">
             <div className="flex items-center gap-3">
               <span className="text-2xl">🧩</span>
               <h2 className={ui.h2}>佈局工具</h2>
             </div>
             <Card>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 pt-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-[hsl(var(--foreground))]">編輯模式</span>
                   <Button size="sm">開啟</Button>
                 </div>
-                <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="grid grid-cols-2 gap-2 text-xs">
                   <Button variant="secondary" size="sm">
                     旋轉
                   </Button>
@@ -411,7 +400,7 @@ export default function Home() {
               <CardHeader>
                 <CardTitle>Catalog</CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-wrap gap-3 pt-0 text-xs text-[hsl(var(--muted-foreground))]">
+              <CardContent className="flex flex-wrap gap-2 text-xs text-[hsl(var(--muted-foreground))]">
                 {['desk', 'chair', 'meeting', 'rest', 'admin', 'deco'].map((item) => (
                   <span key={item} className={ui.badge}>
                     {item}
@@ -419,7 +408,7 @@ export default function Home() {
                 ))}
               </CardContent>
             </Card>
-            <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-2 gap-2 text-xs">
               <Button size="sm">Save</Button>
               <Button size="sm" variant="secondary">
                 Load
